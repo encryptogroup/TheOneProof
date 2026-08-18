@@ -1,0 +1,560 @@
+--- Details ---
+comp_security_param: 128
+compression_factor: 20
+depth: 30
+gates_per_level: 33334
+n_bits: 32
+n_bits_extended: 128
+num-parties: 30
+pid: 28
+pking-semi: true
+pking-verify: 1
+repeat: 2
+stat_security_param: 40
+threads: 1
+
+Check if conditions for Theorem 1 are satisfied
+Protocol security requires that s >= 87
+Computing on 32 bit integers, verifying over 128 bit integers
+==> actual s = 96
+==> Protocol is secure for the provided arguments!
+
+--- Circuit ---
+Input: 33334
+Addition: 1000020
+Multiplication: 1000020
+Multiplication with constant: 0
+Dotproduct: 0
+Invalid: 0
+Total: 2033374
+Depth: 61
+
+Starting Verification...
+Reducing vector size from 3000060...
+==> reduced to 150003
+Reducing vector size from 150003...
+==> reduced to 7501
+Reducing vector size from 7501...
+==> reduced to 376
+Reducing vector size from 376...
+==> reduced to 19
+Reducing vector size from 19...
+==> reduced to scalars
+Verification finished successfully, no cheating was detected
+--- Repetition 1 ---
+setup time: 114.761894 ms
+setup sent: 0 bytes
+time: 7006.547071 ms
+sent: 7802695 bytes
+verification rounds: 25
+
+Starting Verification...
+Reducing vector size from 3000060...
+==> reduced to 150003
+Reducing vector size from 150003...
+==> reduced to 7501
+Reducing vector size from 7501...
+==> reduced to 376
+Reducing vector size from 376...
+==> reduced to 19
+Reducing vector size from 19...
+==> reduced to scalars
+Verification finished successfully, no cheating was detected
+--- Repetition 2 ---
+setup time: 113.648334 ms
+setup sent: 0 bytes
+time: 6990.525047 ms
+sent: 7802695 bytes
+verification rounds: 25
+
+--- Statistics ---
+peak_resident_set_size: 441736
+peak_virtual_memory: 486252
+
+Saved data in p28/fliop-m1000000-n30-c20-d30-pking-1-t0.txt
+--- Details ---
+depth: 30
+gates_per_level: 33334
+n_bits: 32
+num-parties: 30
+pid: 28
+pking-semi: true
+repeat: 2
+stat_security_param: 40
+threads: 1
+
+--- Circuit ---
+Input: 33334
+Addition: 1000020
+Multiplication: 1000020
+Multiplication with constant: 0
+Dotproduct: 0
+Invalid: 0
+Total: 2033374
+Depth: 61
+
+--- Repetition 1 ---
+setup time: 94.22769 ms
+setup sent: 0 bytes
+time: 4005.998238 ms
+sent: 7733040 bytes
+
+--- Repetition 2 ---
+setup time: 81.497593 ms
+setup sent: 0 bytes
+time: 4005.245517 ms
+sent: 7733040 bytes
+
+--- Statistics ---
+peak_resident_set_size: 327816
+peak_virtual_memory: 386340
+
+Saved data in p28/semi-m1000000-n30-d30-pking-t0.txt
+--- Details ---
+comp_security_param: 128
+compression_factor: 20
+depth: 30
+gates_per_level: 33334
+n_bits: 32
+n_bits_extended: 128
+num-parties: 30
+pid: 28
+pking-semi: true
+pking-verify: 1
+repeat: 2
+stat_security_param: 40
+threads: 1
+
+Check if conditions for Theorem 1 are satisfied
+Protocol security requires that s >= 87
+Computing on 32 bit integers, verifying over 128 bit integers
+==> actual s = 96
+==> Protocol is secure for the provided arguments!
+
+--- Circuit ---
+Input: 33334
+Addition: 1000020
+Multiplication: 1000020
+Multiplication with constant: 0
+Dotproduct: 0
+Invalid: 0
+Total: 2033374
+Depth: 61
+
+Starting Verification...
+Reducing vector size from 3000060...
+==> reduced to 150003
+Reducing vector size from 150003...
+==> reduced to 7501
+Reducing vector size from 7501...
+==> reduced to 376
+Reducing vector size from 376...
+==> reduced to 19
+Reducing vector size from 19...
+==> reduced to scalars
+Verification finished successfully, no cheating was detected
+--- Repetition 1 ---
+setup time: 109.478984 ms
+setup sent: 0 bytes
+time: 6992.996283 ms
+sent: 7802695 bytes
+verification rounds: 25
+
+Starting Verification...
+Reducing vector size from 3000060...
+==> reduced to 150003
+Reducing vector size from 150003...
+==> reduced to 7501
+Reducing vector size from 7501...
+==> reduced to 376
+Reducing vector size from 376...
+==> reduced to 19
+Reducing vector size from 19...
+==> reduced to scalars
+Verification finished successfully, no cheating was detected
+--- Repetition 2 ---
+setup time: 89.799897 ms
+setup sent: 0 bytes
+time: 7014.087007 ms
+sent: 7802695 bytes
+verification rounds: 25
+
+--- Statistics ---
+peak_resident_set_size: 440676
+peak_virtual_memory: 486252
+
+Saved data in p28/fliop-m1000000-n30-c20-d30-pking-1-t0.txt
+--- Details ---
+depth: 30
+gates_per_level: 33334
+n_bits: 32
+num-parties: 30
+pid: 28
+pking-semi: true
+repeat: 2
+stat_security_param: 40
+threads: 1
+
+--- Circuit ---
+Input: 33334
+Addition: 1000020
+Multiplication: 1000020
+Multiplication with constant: 0
+Dotproduct: 0
+Invalid: 0
+Total: 2033374
+Depth: 61
+
+--- Repetition 1 ---
+setup time: 115.333879 ms
+setup sent: 0 bytes
+time: 4006.537738 ms
+sent: 7733040 bytes
+
+--- Repetition 2 ---
+setup time: 109.604414 ms
+setup sent: 0 bytes
+time: 4014.86507 ms
+sent: 7733040 bytes
+
+--- Statistics ---
+peak_resident_set_size: 327868
+peak_virtual_memory: 386340
+
+Saved data in p28/semi-m1000000-n30-d30-pking-t0.txt
+--- Details ---
+comp_security_param: 128
+compression_factor: 20
+depth: 30
+gates_per_level: 33334
+n_bits: 32
+n_bits_extended: 128
+num-parties: 30
+pid: 28
+pking-semi: true
+pking-verify: 1
+repeat: 2
+stat_security_param: 40
+threads: 1
+
+Check if conditions for Theorem 1 are satisfied
+Protocol security requires that s >= 87
+Computing on 32 bit integers, verifying over 128 bit integers
+==> actual s = 96
+==> Protocol is secure for the provided arguments!
+
+--- Circuit ---
+Input: 33334
+Addition: 1000020
+Multiplication: 1000020
+Multiplication with constant: 0
+Dotproduct: 0
+Invalid: 0
+Total: 2033374
+Depth: 61
+
+Starting Verification...
+Reducing vector size from 3000060...
+==> reduced to 150003
+Reducing vector size from 150003...
+==> reduced to 7501
+Reducing vector size from 7501...
+==> reduced to 376
+Reducing vector size from 376...
+==> reduced to 19
+Reducing vector size from 19...
+==> reduced to scalars
+Verification finished successfully, no cheating was detected
+--- Repetition 1 ---
+setup time: 124.785532 ms
+setup sent: 0 bytes
+time: 7470.034314 ms
+sent: 7802695 bytes
+verification rounds: 25
+
+Starting Verification...
+Reducing vector size from 3000060...
+==> reduced to 150003
+Reducing vector size from 150003...
+==> reduced to 7501
+Reducing vector size from 7501...
+==> reduced to 376
+Reducing vector size from 376...
+==> reduced to 19
+Reducing vector size from 19...
+==> reduced to scalars
+Verification finished successfully, no cheating was detected
+--- Repetition 2 ---
+setup time: 117.996157 ms
+setup sent: 0 bytes
+time: 6989.272763 ms
+sent: 7802695 bytes
+verification rounds: 25
+
+--- Statistics ---
+peak_resident_set_size: 439964
+peak_virtual_memory: 486252
+
+Saved data in p28/fliop-m1000000-n30-c20-d30-pking-1-t0.txt
+--- Details ---
+depth: 30
+gates_per_level: 33334
+n_bits: 32
+num-parties: 30
+pid: 28
+pking-semi: true
+repeat: 2
+stat_security_param: 40
+threads: 1
+
+--- Circuit ---
+Input: 33334
+Addition: 1000020
+Multiplication: 1000020
+Multiplication with constant: 0
+Dotproduct: 0
+Invalid: 0
+Total: 2033374
+Depth: 61
+
+--- Repetition 1 ---
+setup time: 110.609315 ms
+setup sent: 0 bytes
+time: 4013.387038 ms
+sent: 7733040 bytes
+
+--- Repetition 2 ---
+setup time: 111.35654100000001 ms
+setup sent: 0 bytes
+time: 4013.291571 ms
+sent: 7733040 bytes
+
+--- Statistics ---
+peak_resident_set_size: 340308
+peak_virtual_memory: 386340
+
+Saved data in p28/semi-m1000000-n30-d30-pking-t0.txt
+--- Details ---
+comp_security_param: 128
+compression_factor: 20
+depth: 30
+gates_per_level: 33334
+n_bits: 32
+n_bits_extended: 128
+num-parties: 30
+pid: 28
+pking-semi: true
+pking-verify: 1
+repeat: 2
+stat_security_param: 40
+threads: 1
+
+Check if conditions for Theorem 1 are satisfied
+Protocol security requires that s >= 87
+Computing on 32 bit integers, verifying over 128 bit integers
+==> actual s = 96
+==> Protocol is secure for the provided arguments!
+
+--- Circuit ---
+Input: 33334
+Addition: 1000020
+Multiplication: 1000020
+Multiplication with constant: 0
+Dotproduct: 0
+Invalid: 0
+Total: 2033374
+Depth: 61
+
+Starting Verification...
+Reducing vector size from 3000060...
+==> reduced to 150003
+Reducing vector size from 150003...
+==> reduced to 7501
+Reducing vector size from 7501...
+==> reduced to 376
+Reducing vector size from 376...
+==> reduced to 19
+Reducing vector size from 19...
+==> reduced to scalars
+Verification finished successfully, no cheating was detected
+--- Repetition 1 ---
+setup time: 125.270145 ms
+setup sent: 0 bytes
+time: 6987.964249 ms
+sent: 7802695 bytes
+verification rounds: 25
+
+Starting Verification...
+Reducing vector size from 3000060...
+==> reduced to 150003
+Reducing vector size from 150003...
+==> reduced to 7501
+Reducing vector size from 7501...
+==> reduced to 376
+Reducing vector size from 376...
+==> reduced to 19
+Reducing vector size from 19...
+==> reduced to scalars
+Verification finished successfully, no cheating was detected
+--- Repetition 2 ---
+setup time: 117.13991 ms
+setup sent: 0 bytes
+time: 6989.020725 ms
+sent: 7802695 bytes
+verification rounds: 25
+
+--- Statistics ---
+peak_resident_set_size: 441880
+peak_virtual_memory: 486252
+
+Saved data in p28/fliop-m1000000-n30-c20-d30-pking-1-t0.txt
+--- Details ---
+depth: 30
+gates_per_level: 33334
+n_bits: 32
+num-parties: 30
+pid: 28
+pking-semi: true
+repeat: 2
+stat_security_param: 40
+threads: 1
+
+--- Circuit ---
+Input: 33334
+Addition: 1000020
+Multiplication: 1000020
+Multiplication with constant: 0
+Dotproduct: 0
+Invalid: 0
+Total: 2033374
+Depth: 61
+
+--- Repetition 1 ---
+setup time: 135.024489 ms
+setup sent: 0 bytes
+time: 3994.103981 ms
+sent: 7733040 bytes
+
+--- Repetition 2 ---
+setup time: 94.711708 ms
+setup sent: 0 bytes
+time: 4012.433124 ms
+sent: 7733040 bytes
+
+--- Statistics ---
+peak_resident_set_size: 327804
+peak_virtual_memory: 386340
+
+Saved data in p28/semi-m1000000-n30-d30-pking-t0.txt
+--- Details ---
+comp_security_param: 128
+compression_factor: 20
+depth: 30
+gates_per_level: 33334
+n_bits: 32
+n_bits_extended: 128
+num-parties: 30
+pid: 28
+pking-semi: true
+pking-verify: 1
+repeat: 2
+stat_security_param: 40
+threads: 1
+
+Check if conditions for Theorem 1 are satisfied
+Protocol security requires that s >= 87
+Computing on 32 bit integers, verifying over 128 bit integers
+==> actual s = 96
+==> Protocol is secure for the provided arguments!
+
+--- Circuit ---
+Input: 33334
+Addition: 1000020
+Multiplication: 1000020
+Multiplication with constant: 0
+Dotproduct: 0
+Invalid: 0
+Total: 2033374
+Depth: 61
+
+Starting Verification...
+Reducing vector size from 3000060...
+==> reduced to 150003
+Reducing vector size from 150003...
+==> reduced to 7501
+Reducing vector size from 7501...
+==> reduced to 376
+Reducing vector size from 376...
+==> reduced to 19
+Reducing vector size from 19...
+==> reduced to scalars
+Verification finished successfully, no cheating was detected
+--- Repetition 1 ---
+setup time: 128.535044 ms
+setup sent: 0 bytes
+time: 6982.923872 ms
+sent: 7802695 bytes
+verification rounds: 25
+
+Starting Verification...
+Reducing vector size from 3000060...
+==> reduced to 150003
+Reducing vector size from 150003...
+==> reduced to 7501
+Reducing vector size from 7501...
+==> reduced to 376
+Reducing vector size from 376...
+==> reduced to 19
+Reducing vector size from 19...
+==> reduced to scalars
+Verification finished successfully, no cheating was detected
+--- Repetition 2 ---
+setup time: 118.254093 ms
+setup sent: 0 bytes
+time: 6951.276367 ms
+sent: 7802695 bytes
+verification rounds: 25
+
+--- Statistics ---
+peak_resident_set_size: 442000
+peak_virtual_memory: 486252
+
+Saved data in p28/fliop-m1000000-n30-c20-d30-pking-1-t0.txt
+--- Details ---
+depth: 30
+gates_per_level: 33334
+n_bits: 32
+num-parties: 30
+pid: 28
+pking-semi: true
+repeat: 2
+stat_security_param: 40
+threads: 1
+
+--- Circuit ---
+Input: 33334
+Addition: 1000020
+Multiplication: 1000020
+Multiplication with constant: 0
+Dotproduct: 0
+Invalid: 0
+Total: 2033374
+Depth: 61
+
+--- Repetition 1 ---
+setup time: 99.297417 ms
+setup sent: 0 bytes
+time: 4004.182428 ms
+sent: 7733040 bytes
+
+--- Repetition 2 ---
+setup time: 118.732903 ms
+setup sent: 0 bytes
+time: 4017.240004 ms
+sent: 7733040 bytes
+
+--- Statistics ---
+peak_resident_set_size: 327736
+peak_virtual_memory: 386340
+
+Saved data in p28/semi-m1000000-n30-d30-pking-t0.txt

@@ -1,0 +1,1410 @@
+--- Details ---
+depth: 10
+field_elem_representation_size_bytes: 5
+gates_per_level: 100000
+num-parties: 3
+pid: 1
+repeat: 2
+security_param: 128
+seed: 200
+threads: 6
+
+--- Circuit ---
+Input: 100000
+Addition: 1000000
+Multiplication: 1000000
+Multiplication with Fan-in 3: 0
+Multiplication with Fan-in 4: 0
+Subtraction: 0
+Addition with constant: 0
+Multiplication with constant: 0
+ReLU: 0
+MSB: 0
+Equals to zero: 0
+Less than zero: 0
+Dotproduct: 0
+Dotproduct with truncation: 0
+Invalid: 0
+Total: 2100000
+Depth: 11
+
+--- Repetition 1 ---
+setup time: 1615.41734 ms
+setup sent: 0 bytes
+time: 2233.26193 ms
+sent: 6666650 bytes
+
+--- Repetition 2 ---
+setup time: 1240.975922 ms
+setup sent: 0 bytes
+time: 2202.778005 ms
+sent: 6666650 bytes
+
+--- Statistics ---
+peak_resident_set_size: 1734676
+peak_virtual_memory: 2041732
+
+Saved data in p1/n3-c2-d10-pking-0.txt
+--- Details ---
+depth: 30
+field_elem_representation_size_bytes: 5
+gates_per_level: 33334
+num-parties: 3
+pid: 1
+repeat: 2
+security_param: 128
+seed: 200
+threads: 6
+
+--- Circuit ---
+Input: 33334
+Addition: 1000020
+Multiplication: 1000020
+Multiplication with Fan-in 3: 0
+Multiplication with Fan-in 4: 0
+Subtraction: 0
+Addition with constant: 0
+Multiplication with constant: 0
+ReLU: 0
+MSB: 0
+Equals to zero: 0
+Less than zero: 0
+Dotproduct: 0
+Dotproduct with truncation: 0
+Invalid: 0
+Total: 2033374
+Depth: 31
+
+--- Repetition 1 ---
+setup time: 1560.156303 ms
+setup sent: 0 bytes
+time: 2243.993983 ms
+sent: 6666750 bytes
+
+--- Repetition 2 ---
+setup time: 1211.645643 ms
+setup sent: 0 bytes
+time: 2112.569125 ms
+sent: 6666750 bytes
+
+--- Statistics ---
+peak_resident_set_size: 1646912
+peak_virtual_memory: 2115120
+
+Saved data in p1/n3-c2-d30-pking-0.txt
+--- Details ---
+depth: 100
+field_elem_representation_size_bytes: 5
+gates_per_level: 10000
+num-parties: 3
+pid: 1
+repeat: 2
+security_param: 128
+seed: 200
+threads: 6
+
+--- Circuit ---
+Input: 10000
+Addition: 1000000
+Multiplication: 1000000
+Multiplication with Fan-in 3: 0
+Multiplication with Fan-in 4: 0
+Subtraction: 0
+Addition with constant: 0
+Multiplication with constant: 0
+ReLU: 0
+MSB: 0
+Equals to zero: 0
+Less than zero: 0
+Dotproduct: 0
+Dotproduct with truncation: 0
+Invalid: 0
+Total: 2010000
+Depth: 101
+
+--- Repetition 1 ---
+setup time: 1565.376315 ms
+setup sent: 0 bytes
+time: 2171.707161 ms
+sent: 6666500 bytes
+
+--- Repetition 2 ---
+setup time: 1216.773697 ms
+setup sent: 0 bytes
+time: 1998.771809 ms
+sent: 6666500 bytes
+
+--- Statistics ---
+peak_resident_set_size: 1619984
+peak_virtual_memory: 2339124
+
+Saved data in p1/n3-c2-d100-pking-0.txt
+--- Details ---
+depth: 10
+field_elem_representation_size_bytes: 5
+gates_per_level: 100000
+num-parties: 5
+pid: 1
+repeat: 2
+security_param: 128
+seed: 200
+threads: 6
+
+--- Circuit ---
+Input: 100000
+Addition: 1000000
+Multiplication: 1000000
+Multiplication with Fan-in 3: 0
+Multiplication with Fan-in 4: 0
+Subtraction: 0
+Addition with constant: 0
+Multiplication with constant: 0
+ReLU: 0
+MSB: 0
+Equals to zero: 0
+Less than zero: 0
+Dotproduct: 0
+Dotproduct with truncation: 0
+Invalid: 0
+Total: 2100000
+Depth: 11
+
+--- Repetition 1 ---
+setup time: 1666.9202540000001 ms
+setup sent: 0 bytes
+time: 2442.315912 ms
+sent: 8000000 bytes
+
+--- Repetition 2 ---
+setup time: 1280.338675 ms
+setup sent: 0 bytes
+time: 2273.258276 ms
+sent: 8000000 bytes
+
+--- Statistics ---
+peak_resident_set_size: 1728200
+peak_virtual_memory: 2249604
+
+Saved data in p1/n5-c2-d10-pking-0.txt
+--- Details ---
+depth: 30
+field_elem_representation_size_bytes: 5
+gates_per_level: 33334
+num-parties: 5
+pid: 1
+repeat: 2
+security_param: 128
+seed: 200
+threads: 6
+
+--- Circuit ---
+Input: 33334
+Addition: 1000020
+Multiplication: 1000020
+Multiplication with Fan-in 3: 0
+Multiplication with Fan-in 4: 0
+Subtraction: 0
+Addition with constant: 0
+Multiplication with constant: 0
+ReLU: 0
+MSB: 0
+Equals to zero: 0
+Less than zero: 0
+Dotproduct: 0
+Dotproduct with truncation: 0
+Invalid: 0
+Total: 2033374
+Depth: 31
+
+--- Repetition 1 ---
+setup time: 1616.033764 ms
+setup sent: 0 bytes
+time: 2370.807931 ms
+sent: 7999800 bytes
+
+--- Repetition 2 ---
+setup time: 1269.093147 ms
+setup sent: 0 bytes
+time: 2216.608471 ms
+sent: 7999800 bytes
+
+--- Statistics ---
+peak_resident_set_size: 1650816
+peak_virtual_memory: 2292968
+
+Saved data in p1/n5-c2-d30-pking-0.txt
+--- Details ---
+depth: 100
+field_elem_representation_size_bytes: 5
+gates_per_level: 10000
+num-parties: 5
+pid: 1
+repeat: 2
+security_param: 128
+seed: 200
+threads: 6
+
+--- Circuit ---
+Input: 10000
+Addition: 1000000
+Multiplication: 1000000
+Multiplication with Fan-in 3: 0
+Multiplication with Fan-in 4: 0
+Subtraction: 0
+Addition with constant: 0
+Multiplication with constant: 0
+ReLU: 0
+MSB: 0
+Equals to zero: 0
+Less than zero: 0
+Dotproduct: 0
+Dotproduct with truncation: 0
+Invalid: 0
+Total: 2010000
+Depth: 101
+
+--- Repetition 1 ---
+setup time: 1605.208331 ms
+setup sent: 0 bytes
+time: 2392.919891 ms
+sent: 8000000 bytes
+
+--- Repetition 2 ---
+setup time: 1233.269898 ms
+setup sent: 0 bytes
+time: 2304.774113 ms
+sent: 8000000 bytes
+
+--- Statistics ---
+peak_resident_set_size: 1623884
+peak_virtual_memory: 2015452
+
+Saved data in p1/n5-c2-d100-pking-0.txt
+--- Details ---
+depth: 10
+field_elem_representation_size_bytes: 5
+gates_per_level: 100000
+num-parties: 3
+pid: 1
+repeat: 2
+security_param: 128
+seed: 200
+threads: 6
+
+--- Circuit ---
+Input: 100000
+Addition: 1000000
+Multiplication: 1000000
+Multiplication with Fan-in 3: 0
+Multiplication with Fan-in 4: 0
+Subtraction: 0
+Addition with constant: 0
+Multiplication with constant: 0
+ReLU: 0
+MSB: 0
+Equals to zero: 0
+Less than zero: 0
+Dotproduct: 0
+Dotproduct with truncation: 0
+Invalid: 0
+Total: 2100000
+Depth: 11
+
+--- Repetition 1 ---
+setup time: 1620.233877 ms
+setup sent: 0 bytes
+time: 2239.881914 ms
+sent: 6666650 bytes
+
+--- Repetition 2 ---
+setup time: 1247.604294 ms
+setup sent: 0 bytes
+time: 2180.034641 ms
+sent: 6666650 bytes
+
+--- Statistics ---
+peak_resident_set_size: 1725148
+peak_virtual_memory: 2631556
+
+Saved data in p1/n3-c2-d10-pking-0.txt
+--- Details ---
+depth: 30
+field_elem_representation_size_bytes: 5
+gates_per_level: 33334
+num-parties: 3
+pid: 1
+repeat: 2
+security_param: 128
+seed: 200
+threads: 6
+
+--- Circuit ---
+Input: 33334
+Addition: 1000020
+Multiplication: 1000020
+Multiplication with Fan-in 3: 0
+Multiplication with Fan-in 4: 0
+Subtraction: 0
+Addition with constant: 0
+Multiplication with constant: 0
+ReLU: 0
+MSB: 0
+Equals to zero: 0
+Less than zero: 0
+Dotproduct: 0
+Dotproduct with truncation: 0
+Invalid: 0
+Total: 2033374
+Depth: 31
+
+--- Repetition 1 ---
+setup time: 1560.597838 ms
+setup sent: 0 bytes
+time: 2323.082933 ms
+sent: 6666750 bytes
+
+--- Repetition 2 ---
+setup time: 1222.615094 ms
+setup sent: 0 bytes
+time: 2103.231282 ms
+sent: 6666750 bytes
+
+--- Statistics ---
+peak_resident_set_size: 1646952
+peak_virtual_memory: 2500144
+
+Saved data in p1/n3-c2-d30-pking-0.txt
+--- Details ---
+depth: 100
+field_elem_representation_size_bytes: 5
+gates_per_level: 10000
+num-parties: 3
+pid: 1
+repeat: 2
+security_param: 128
+seed: 200
+threads: 6
+
+--- Circuit ---
+Input: 10000
+Addition: 1000000
+Multiplication: 1000000
+Multiplication with Fan-in 3: 0
+Multiplication with Fan-in 4: 0
+Subtraction: 0
+Addition with constant: 0
+Multiplication with constant: 0
+ReLU: 0
+MSB: 0
+Equals to zero: 0
+Less than zero: 0
+Dotproduct: 0
+Dotproduct with truncation: 0
+Invalid: 0
+Total: 2010000
+Depth: 101
+
+--- Repetition 1 ---
+setup time: 1560.577391 ms
+setup sent: 0 bytes
+time: 2165.11651 ms
+sent: 6666500 bytes
+
+--- Repetition 2 ---
+setup time: 1220.832735 ms
+setup sent: 0 bytes
+time: 2066.12888 ms
+sent: 6666500 bytes
+
+--- Statistics ---
+peak_resident_set_size: 1619968
+peak_virtual_memory: 2218292
+
+Saved data in p1/n3-c2-d100-pking-0.txt
+--- Details ---
+depth: 10
+field_elem_representation_size_bytes: 5
+gates_per_level: 100000
+num-parties: 5
+pid: 1
+repeat: 2
+security_param: 128
+seed: 200
+threads: 6
+
+--- Circuit ---
+Input: 100000
+Addition: 1000000
+Multiplication: 1000000
+Multiplication with Fan-in 3: 0
+Multiplication with Fan-in 4: 0
+Subtraction: 0
+Addition with constant: 0
+Multiplication with constant: 0
+ReLU: 0
+MSB: 0
+Equals to zero: 0
+Less than zero: 0
+Dotproduct: 0
+Dotproduct with truncation: 0
+Invalid: 0
+Total: 2100000
+Depth: 11
+
+--- Repetition 1 ---
+setup time: 1676.091525 ms
+setup sent: 0 bytes
+time: 2424.323108 ms
+sent: 8000000 bytes
+
+--- Repetition 2 ---
+setup time: 1289.94082 ms
+setup sent: 0 bytes
+time: 2249.497794 ms
+sent: 8000000 bytes
+
+--- Statistics ---
+peak_resident_set_size: 1728524
+peak_virtual_memory: 2241412
+
+Saved data in p1/n5-c2-d10-pking-0.txt
+--- Details ---
+depth: 30
+field_elem_representation_size_bytes: 5
+gates_per_level: 33334
+num-parties: 5
+pid: 1
+repeat: 2
+security_param: 128
+seed: 200
+threads: 6
+
+--- Circuit ---
+Input: 33334
+Addition: 1000020
+Multiplication: 1000020
+Multiplication with Fan-in 3: 0
+Multiplication with Fan-in 4: 0
+Subtraction: 0
+Addition with constant: 0
+Multiplication with constant: 0
+ReLU: 0
+MSB: 0
+Equals to zero: 0
+Less than zero: 0
+Dotproduct: 0
+Dotproduct with truncation: 0
+Invalid: 0
+Total: 2033374
+Depth: 31
+
+--- Repetition 1 ---
+setup time: 1627.970929 ms
+setup sent: 0 bytes
+time: 2359.152429 ms
+sent: 7999800 bytes
+
+--- Repetition 2 ---
+setup time: 1263.739754 ms
+setup sent: 0 bytes
+time: 2284.988213 ms
+sent: 7999800 bytes
+
+--- Statistics ---
+peak_resident_set_size: 1650720
+peak_virtual_memory: 2118888
+
+Saved data in p1/n5-c2-d30-pking-0.txt
+--- Details ---
+depth: 100
+field_elem_representation_size_bytes: 5
+gates_per_level: 10000
+num-parties: 5
+pid: 1
+repeat: 2
+security_param: 128
+seed: 200
+threads: 6
+
+--- Circuit ---
+Input: 10000
+Addition: 1000000
+Multiplication: 1000000
+Multiplication with Fan-in 3: 0
+Multiplication with Fan-in 4: 0
+Subtraction: 0
+Addition with constant: 0
+Multiplication with constant: 0
+ReLU: 0
+MSB: 0
+Equals to zero: 0
+Less than zero: 0
+Dotproduct: 0
+Dotproduct with truncation: 0
+Invalid: 0
+Total: 2010000
+Depth: 101
+
+--- Repetition 1 ---
+setup time: 1593.393692 ms
+setup sent: 0 bytes
+time: 2394.687999 ms
+sent: 8000000 bytes
+
+--- Repetition 2 ---
+setup time: 1261.54002 ms
+setup sent: 0 bytes
+time: 2247.4179 ms
+sent: 8000000 bytes
+
+--- Statistics ---
+peak_resident_set_size: 1623880
+peak_virtual_memory: 1949916
+
+Saved data in p1/n5-c2-d100-pking-0.txt
+--- Details ---
+depth: 10
+field_elem_representation_size_bytes: 5
+gates_per_level: 100000
+num-parties: 3
+pid: 1
+repeat: 2
+security_param: 128
+seed: 200
+threads: 6
+
+--- Circuit ---
+Input: 100000
+Addition: 1000000
+Multiplication: 1000000
+Multiplication with Fan-in 3: 0
+Multiplication with Fan-in 4: 0
+Subtraction: 0
+Addition with constant: 0
+Multiplication with constant: 0
+ReLU: 0
+MSB: 0
+Equals to zero: 0
+Less than zero: 0
+Dotproduct: 0
+Dotproduct with truncation: 0
+Invalid: 0
+Total: 2100000
+Depth: 11
+
+--- Repetition 1 ---
+setup time: 1608.855945 ms
+setup sent: 0 bytes
+time: 2278.89857 ms
+sent: 6666650 bytes
+
+--- Repetition 2 ---
+setup time: 1243.223099 ms
+setup sent: 0 bytes
+time: 2118.964814 ms
+sent: 6666650 bytes
+
+--- Statistics ---
+peak_resident_set_size: 1731612
+peak_virtual_memory: 2303876
+
+Saved data in p1/n3-c2-d10-pking-0.txt
+--- Details ---
+depth: 30
+field_elem_representation_size_bytes: 5
+gates_per_level: 33334
+num-parties: 3
+pid: 1
+repeat: 2
+security_param: 128
+seed: 200
+threads: 6
+
+--- Circuit ---
+Input: 33334
+Addition: 1000020
+Multiplication: 1000020
+Multiplication with Fan-in 3: 0
+Multiplication with Fan-in 4: 0
+Subtraction: 0
+Addition with constant: 0
+Multiplication with constant: 0
+ReLU: 0
+MSB: 0
+Equals to zero: 0
+Less than zero: 0
+Dotproduct: 0
+Dotproduct with truncation: 0
+Invalid: 0
+Total: 2033374
+Depth: 31
+
+--- Repetition 1 ---
+setup time: 1563.899176 ms
+setup sent: 0 bytes
+time: 2238.394362 ms
+sent: 6666750 bytes
+
+--- Repetition 2 ---
+setup time: 1227.682242 ms
+setup sent: 0 bytes
+time: 2122.869393 ms
+sent: 6666750 bytes
+
+--- Statistics ---
+peak_resident_set_size: 1646920
+peak_virtual_memory: 2246192
+
+Saved data in p1/n3-c2-d30-pking-0.txt
+--- Details ---
+depth: 100
+field_elem_representation_size_bytes: 5
+gates_per_level: 10000
+num-parties: 3
+pid: 1
+repeat: 2
+security_param: 128
+seed: 200
+threads: 6
+
+--- Circuit ---
+Input: 10000
+Addition: 1000000
+Multiplication: 1000000
+Multiplication with Fan-in 3: 0
+Multiplication with Fan-in 4: 0
+Subtraction: 0
+Addition with constant: 0
+Multiplication with constant: 0
+ReLU: 0
+MSB: 0
+Equals to zero: 0
+Less than zero: 0
+Dotproduct: 0
+Dotproduct with truncation: 0
+Invalid: 0
+Total: 2010000
+Depth: 101
+
+--- Repetition 1 ---
+setup time: 1559.392737 ms
+setup sent: 0 bytes
+time: 2220.354236 ms
+sent: 6666500 bytes
+
+--- Repetition 2 ---
+setup time: 1205.599155 ms
+setup sent: 0 bytes
+time: 2134.025833 ms
+sent: 6666500 bytes
+
+--- Statistics ---
+peak_resident_set_size: 1619904
+peak_virtual_memory: 1947940
+
+Saved data in p1/n3-c2-d100-pking-0.txt
+--- Details ---
+depth: 10
+field_elem_representation_size_bytes: 5
+gates_per_level: 100000
+num-parties: 5
+pid: 1
+repeat: 2
+security_param: 128
+seed: 200
+threads: 6
+
+--- Circuit ---
+Input: 100000
+Addition: 1000000
+Multiplication: 1000000
+Multiplication with Fan-in 3: 0
+Multiplication with Fan-in 4: 0
+Subtraction: 0
+Addition with constant: 0
+Multiplication with constant: 0
+ReLU: 0
+MSB: 0
+Equals to zero: 0
+Less than zero: 0
+Dotproduct: 0
+Dotproduct with truncation: 0
+Invalid: 0
+Total: 2100000
+Depth: 11
+
+--- Repetition 1 ---
+setup time: 1669.000114 ms
+setup sent: 0 bytes
+time: 2396.94624 ms
+sent: 8000000 bytes
+
+--- Repetition 2 ---
+setup time: 1296.590653 ms
+setup sent: 0 bytes
+time: 2300.012916 ms
+sent: 8000000 bytes
+
+--- Statistics ---
+peak_resident_set_size: 1730248
+peak_virtual_memory: 2446212
+
+Saved data in p1/n5-c2-d10-pking-0.txt
+--- Details ---
+depth: 30
+field_elem_representation_size_bytes: 5
+gates_per_level: 33334
+num-parties: 5
+pid: 1
+repeat: 2
+security_param: 128
+seed: 200
+threads: 6
+
+--- Circuit ---
+Input: 33334
+Addition: 1000020
+Multiplication: 1000020
+Multiplication with Fan-in 3: 0
+Multiplication with Fan-in 4: 0
+Subtraction: 0
+Addition with constant: 0
+Multiplication with constant: 0
+ReLU: 0
+MSB: 0
+Equals to zero: 0
+Less than zero: 0
+Dotproduct: 0
+Dotproduct with truncation: 0
+Invalid: 0
+Total: 2033374
+Depth: 31
+
+--- Repetition 1 ---
+setup time: 1619.78619 ms
+setup sent: 0 bytes
+time: 2361.752159 ms
+sent: 7999800 bytes
+
+--- Repetition 2 ---
+setup time: 1252.81831 ms
+setup sent: 0 bytes
+time: 2294.473253 ms
+sent: 7999800 bytes
+
+--- Statistics ---
+peak_resident_set_size: 1650812
+peak_virtual_memory: 2184424
+
+Saved data in p1/n5-c2-d30-pking-0.txt
+--- Details ---
+depth: 100
+field_elem_representation_size_bytes: 5
+gates_per_level: 10000
+num-parties: 5
+pid: 1
+repeat: 2
+security_param: 128
+seed: 200
+threads: 6
+
+--- Circuit ---
+Input: 10000
+Addition: 1000000
+Multiplication: 1000000
+Multiplication with Fan-in 3: 0
+Multiplication with Fan-in 4: 0
+Subtraction: 0
+Addition with constant: 0
+Multiplication with constant: 0
+ReLU: 0
+MSB: 0
+Equals to zero: 0
+Less than zero: 0
+Dotproduct: 0
+Dotproduct with truncation: 0
+Invalid: 0
+Total: 2010000
+Depth: 101
+
+--- Repetition 1 ---
+setup time: 1590.216868 ms
+setup sent: 0 bytes
+time: 2392.801846 ms
+sent: 8000000 bytes
+
+--- Repetition 2 ---
+setup time: 1251.500544 ms
+setup sent: 0 bytes
+time: 2271.847991 ms
+sent: 8000000 bytes
+
+--- Statistics ---
+peak_resident_set_size: 1623836
+peak_virtual_memory: 1949916
+
+Saved data in p1/n5-c2-d100-pking-0.txt
+--- Details ---
+depth: 10
+field_elem_representation_size_bytes: 5
+gates_per_level: 100000
+num-parties: 3
+pid: 1
+repeat: 2
+security_param: 128
+seed: 200
+threads: 6
+
+--- Circuit ---
+Input: 100000
+Addition: 1000000
+Multiplication: 1000000
+Multiplication with Fan-in 3: 0
+Multiplication with Fan-in 4: 0
+Subtraction: 0
+Addition with constant: 0
+Multiplication with constant: 0
+ReLU: 0
+MSB: 0
+Equals to zero: 0
+Less than zero: 0
+Dotproduct: 0
+Dotproduct with truncation: 0
+Invalid: 0
+Total: 2100000
+Depth: 11
+
+--- Repetition 1 ---
+setup time: 1607.337921 ms
+setup sent: 0 bytes
+time: 2264.49572 ms
+sent: 6666650 bytes
+
+--- Repetition 2 ---
+setup time: 1245.866026 ms
+setup sent: 0 bytes
+time: 2072.71888 ms
+sent: 6666650 bytes
+
+--- Statistics ---
+peak_resident_set_size: 1725140
+peak_virtual_memory: 2606980
+
+Saved data in p1/n3-c2-d10-pking-0.txt
+--- Details ---
+depth: 30
+field_elem_representation_size_bytes: 5
+gates_per_level: 33334
+num-parties: 3
+pid: 1
+repeat: 2
+security_param: 128
+seed: 200
+threads: 6
+
+--- Circuit ---
+Input: 33334
+Addition: 1000020
+Multiplication: 1000020
+Multiplication with Fan-in 3: 0
+Multiplication with Fan-in 4: 0
+Subtraction: 0
+Addition with constant: 0
+Multiplication with constant: 0
+ReLU: 0
+MSB: 0
+Equals to zero: 0
+Less than zero: 0
+Dotproduct: 0
+Dotproduct with truncation: 0
+Invalid: 0
+Total: 2033374
+Depth: 31
+
+--- Repetition 1 ---
+setup time: 1564.870715 ms
+setup sent: 0 bytes
+time: 2213.130484 ms
+sent: 6666750 bytes
+
+--- Repetition 2 ---
+setup time: 1222.297863 ms
+setup sent: 0 bytes
+time: 2146.049799 ms
+sent: 6666750 bytes
+
+--- Statistics ---
+peak_resident_set_size: 1677080
+peak_virtual_memory: 2573872
+
+Saved data in p1/n3-c2-d30-pking-0.txt
+--- Details ---
+depth: 100
+field_elem_representation_size_bytes: 5
+gates_per_level: 10000
+num-parties: 3
+pid: 1
+repeat: 2
+security_param: 128
+seed: 200
+threads: 6
+
+--- Circuit ---
+Input: 10000
+Addition: 1000000
+Multiplication: 1000000
+Multiplication with Fan-in 3: 0
+Multiplication with Fan-in 4: 0
+Subtraction: 0
+Addition with constant: 0
+Multiplication with constant: 0
+ReLU: 0
+MSB: 0
+Equals to zero: 0
+Less than zero: 0
+Dotproduct: 0
+Dotproduct with truncation: 0
+Invalid: 0
+Total: 2010000
+Depth: 101
+
+--- Repetition 1 ---
+setup time: 1546.740289 ms
+setup sent: 0 bytes
+time: 2152.00507 ms
+sent: 6666500 bytes
+
+--- Repetition 2 ---
+setup time: 1215.742964 ms
+setup sent: 0 bytes
+time: 2123.346502 ms
+sent: 6666500 bytes
+
+--- Statistics ---
+peak_resident_set_size: 1619832
+peak_virtual_memory: 2482484
+
+Saved data in p1/n3-c2-d100-pking-0.txt
+--- Details ---
+depth: 10
+field_elem_representation_size_bytes: 5
+gates_per_level: 100000
+num-parties: 5
+pid: 1
+repeat: 2
+security_param: 128
+seed: 200
+threads: 6
+
+--- Circuit ---
+Input: 100000
+Addition: 1000000
+Multiplication: 1000000
+Multiplication with Fan-in 3: 0
+Multiplication with Fan-in 4: 0
+Subtraction: 0
+Addition with constant: 0
+Multiplication with constant: 0
+ReLU: 0
+MSB: 0
+Equals to zero: 0
+Less than zero: 0
+Dotproduct: 0
+Dotproduct with truncation: 0
+Invalid: 0
+Total: 2100000
+Depth: 11
+
+--- Repetition 1 ---
+setup time: 1679.460806 ms
+setup sent: 0 bytes
+time: 2440.788202 ms
+sent: 8000000 bytes
+
+--- Repetition 2 ---
+setup time: 1308.844908 ms
+setup sent: 0 bytes
+time: 2261.594093 ms
+sent: 8000000 bytes
+
+--- Statistics ---
+peak_resident_set_size: 1728212
+peak_virtual_memory: 2175876
+
+Saved data in p1/n5-c2-d10-pking-0.txt
+--- Details ---
+depth: 30
+field_elem_representation_size_bytes: 5
+gates_per_level: 33334
+num-parties: 5
+pid: 1
+repeat: 2
+security_param: 128
+seed: 200
+threads: 6
+
+--- Circuit ---
+Input: 33334
+Addition: 1000020
+Multiplication: 1000020
+Multiplication with Fan-in 3: 0
+Multiplication with Fan-in 4: 0
+Subtraction: 0
+Addition with constant: 0
+Multiplication with constant: 0
+ReLU: 0
+MSB: 0
+Equals to zero: 0
+Less than zero: 0
+Dotproduct: 0
+Dotproduct with truncation: 0
+Invalid: 0
+Total: 2033374
+Depth: 31
+
+--- Repetition 1 ---
+setup time: 1644.686141 ms
+setup sent: 0 bytes
+time: 2392.012984 ms
+sent: 7999800 bytes
+
+--- Repetition 2 ---
+setup time: 1273.026308 ms
+setup sent: 0 bytes
+time: 2268.886422 ms
+sent: 7999800 bytes
+
+--- Statistics ---
+peak_resident_set_size: 1650828
+peak_virtual_memory: 2381032
+
+Saved data in p1/n5-c2-d30-pking-0.txt
+--- Details ---
+depth: 100
+field_elem_representation_size_bytes: 5
+gates_per_level: 10000
+num-parties: 5
+pid: 1
+repeat: 2
+security_param: 128
+seed: 200
+threads: 6
+
+--- Circuit ---
+Input: 10000
+Addition: 1000000
+Multiplication: 1000000
+Multiplication with Fan-in 3: 0
+Multiplication with Fan-in 4: 0
+Subtraction: 0
+Addition with constant: 0
+Multiplication with constant: 0
+ReLU: 0
+MSB: 0
+Equals to zero: 0
+Less than zero: 0
+Dotproduct: 0
+Dotproduct with truncation: 0
+Invalid: 0
+Total: 2010000
+Depth: 101
+
+--- Repetition 1 ---
+setup time: 1577.217373 ms
+setup sent: 0 bytes
+time: 2418.591923 ms
+sent: 8000000 bytes
+
+--- Repetition 2 ---
+setup time: 1225.108667 ms
+setup sent: 0 bytes
+time: 2291.395356 ms
+sent: 8000000 bytes
+
+--- Statistics ---
+peak_resident_set_size: 1623892
+peak_virtual_memory: 2277596
+
+Saved data in p1/n5-c2-d100-pking-0.txt
+--- Details ---
+depth: 10
+field_elem_representation_size_bytes: 5
+gates_per_level: 100000
+num-parties: 3
+pid: 1
+repeat: 2
+security_param: 128
+seed: 200
+threads: 6
+
+--- Circuit ---
+Input: 100000
+Addition: 1000000
+Multiplication: 1000000
+Multiplication with Fan-in 3: 0
+Multiplication with Fan-in 4: 0
+Subtraction: 0
+Addition with constant: 0
+Multiplication with constant: 0
+ReLU: 0
+MSB: 0
+Equals to zero: 0
+Less than zero: 0
+Dotproduct: 0
+Dotproduct with truncation: 0
+Invalid: 0
+Total: 2100000
+Depth: 11
+
+--- Repetition 1 ---
+setup time: 1608.853571 ms
+setup sent: 0 bytes
+time: 2294.100162 ms
+sent: 6666650 bytes
+
+--- Repetition 2 ---
+setup time: 1249.024614 ms
+setup sent: 0 bytes
+time: 2122.649863 ms
+sent: 6666650 bytes
+
+--- Statistics ---
+peak_resident_set_size: 1725216
+peak_virtual_memory: 2303876
+
+Saved data in p1/n3-c2-d10-pking-0.txt
+--- Details ---
+depth: 30
+field_elem_representation_size_bytes: 5
+gates_per_level: 33334
+num-parties: 3
+pid: 1
+repeat: 2
+security_param: 128
+seed: 200
+threads: 6
+
+--- Circuit ---
+Input: 33334
+Addition: 1000020
+Multiplication: 1000020
+Multiplication with Fan-in 3: 0
+Multiplication with Fan-in 4: 0
+Subtraction: 0
+Addition with constant: 0
+Multiplication with constant: 0
+ReLU: 0
+MSB: 0
+Equals to zero: 0
+Less than zero: 0
+Dotproduct: 0
+Dotproduct with truncation: 0
+Invalid: 0
+Total: 2033374
+Depth: 31
+
+--- Repetition 1 ---
+setup time: 1559.714103 ms
+setup sent: 0 bytes
+time: 2224.725429 ms
+sent: 6666750 bytes
+
+--- Repetition 2 ---
+setup time: 1229.605523 ms
+setup sent: 0 bytes
+time: 2189.568321 ms
+sent: 6666750 bytes
+
+--- Statistics ---
+peak_resident_set_size: 1647004
+peak_virtual_memory: 2534960
+
+Saved data in p1/n3-c2-d30-pking-0.txt
+--- Details ---
+depth: 100
+field_elem_representation_size_bytes: 5
+gates_per_level: 10000
+num-parties: 3
+pid: 1
+repeat: 2
+security_param: 128
+seed: 200
+threads: 6
+
+--- Circuit ---
+Input: 10000
+Addition: 1000000
+Multiplication: 1000000
+Multiplication with Fan-in 3: 0
+Multiplication with Fan-in 4: 0
+Subtraction: 0
+Addition with constant: 0
+Multiplication with constant: 0
+ReLU: 0
+MSB: 0
+Equals to zero: 0
+Less than zero: 0
+Dotproduct: 0
+Dotproduct with truncation: 0
+Invalid: 0
+Total: 2010000
+Depth: 101
+
+--- Repetition 1 ---
+setup time: 1540.48642 ms
+setup sent: 0 bytes
+time: 2170.433867 ms
+sent: 6666500 bytes
+
+--- Repetition 2 ---
+setup time: 1208.017086 ms
+setup sent: 0 bytes
+time: 2024.414453 ms
+sent: 6666500 bytes
+
+--- Statistics ---
+peak_resident_set_size: 1619840
+peak_virtual_memory: 2208052
+
+Saved data in p1/n3-c2-d100-pking-0.txt
+--- Details ---
+depth: 10
+field_elem_representation_size_bytes: 5
+gates_per_level: 100000
+num-parties: 5
+pid: 1
+repeat: 2
+security_param: 128
+seed: 200
+threads: 6
+
+--- Circuit ---
+Input: 100000
+Addition: 1000000
+Multiplication: 1000000
+Multiplication with Fan-in 3: 0
+Multiplication with Fan-in 4: 0
+Subtraction: 0
+Addition with constant: 0
+Multiplication with constant: 0
+ReLU: 0
+MSB: 0
+Equals to zero: 0
+Less than zero: 0
+Dotproduct: 0
+Dotproduct with truncation: 0
+Invalid: 0
+Total: 2100000
+Depth: 11
+
+--- Repetition 1 ---
+setup time: 1666.168289 ms
+setup sent: 0 bytes
+time: 2452.686367 ms
+sent: 8000000 bytes
+
+--- Repetition 2 ---
+setup time: 1281.943041 ms
+setup sent: 0 bytes
+time: 2304.404911 ms
+sent: 8000000 bytes
+
+--- Statistics ---
+peak_resident_set_size: 1738348
+peak_virtual_memory: 2044804
+
+Saved data in p1/n5-c2-d10-pking-0.txt
+--- Details ---
+depth: 30
+field_elem_representation_size_bytes: 5
+gates_per_level: 33334
+num-parties: 5
+pid: 1
+repeat: 2
+security_param: 128
+seed: 200
+threads: 6
+
+--- Circuit ---
+Input: 33334
+Addition: 1000020
+Multiplication: 1000020
+Multiplication with Fan-in 3: 0
+Multiplication with Fan-in 4: 0
+Subtraction: 0
+Addition with constant: 0
+Multiplication with constant: 0
+ReLU: 0
+MSB: 0
+Equals to zero: 0
+Less than zero: 0
+Dotproduct: 0
+Dotproduct with truncation: 0
+Invalid: 0
+Total: 2033374
+Depth: 31
+
+--- Repetition 1 ---
+setup time: 1610.066112 ms
+setup sent: 0 bytes
+time: 2406.913214 ms
+sent: 7999800 bytes
+
+--- Repetition 2 ---
+setup time: 1257.680196 ms
+setup sent: 0 bytes
+time: 2341.704393 ms
+sent: 7999800 bytes
+
+--- Statistics ---
+peak_resident_set_size: 1650788
+peak_virtual_memory: 2137320
+
+Saved data in p1/n5-c2-d30-pking-0.txt
+--- Details ---
+depth: 100
+field_elem_representation_size_bytes: 5
+gates_per_level: 10000
+num-parties: 5
+pid: 1
+repeat: 2
+security_param: 128
+seed: 200
+threads: 6
+
+--- Circuit ---
+Input: 10000
+Addition: 1000000
+Multiplication: 1000000
+Multiplication with Fan-in 3: 0
+Multiplication with Fan-in 4: 0
+Subtraction: 0
+Addition with constant: 0
+Multiplication with constant: 0
+ReLU: 0
+MSB: 0
+Equals to zero: 0
+Less than zero: 0
+Dotproduct: 0
+Dotproduct with truncation: 0
+Invalid: 0
+Total: 2010000
+Depth: 101
+
+--- Repetition 1 ---
+setup time: 1603.527779 ms
+setup sent: 0 bytes
+time: 2358.396803 ms
+sent: 8000000 bytes
+
+--- Repetition 2 ---
+setup time: 1310.234954 ms
+setup sent: 0 bytes
+time: 2210.983784 ms
+sent: 8000000 bytes
+
+--- Statistics ---
+peak_resident_set_size: 1623888
+peak_virtual_memory: 2015452
+
+Saved data in p1/n5-c2-d100-pking-0.txt

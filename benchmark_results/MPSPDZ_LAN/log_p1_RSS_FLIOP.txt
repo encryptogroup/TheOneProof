@@ -1,0 +1,140 @@
+===iter 1===
+Using security parameter 40
+Trying to run 32-bit computation
+[zico] use_encryption: 1
+Adding threads
+Thread size: 1
+Adding threads
+Thread size: 1
+ZKP failed
+The following benchmarks are including preprocessing (offline phase).
+Time = 0.405494 seconds 
+Data sent = 5.11621 MB in ~46 rounds (party 1 only; use '-v' for more details)
+Global data sent = 15.3486 MB (all parties)
+This virtual machine was compiled with GCC. Recompile with 'CXX = clang++' in 'CONFIG.mine' for optimal performance.
+===iter 2===
+Using security parameter 40
+Trying to run 32-bit computation
+[zico] use_encryption: 1
+Adding threads
+Thread size: 1
+Adding threads
+Thread size: 1
+ZKP failed
+The following benchmarks are including preprocessing (offline phase).
+Time = 0.408668 seconds 
+Data sent = 5.11621 MB in ~46 rounds (party 1 only; use '-v' for more details)
+Global data sent = 15.3486 MB (all parties)
+This virtual machine was compiled with GCC. Recompile with 'CXX = clang++' in 'CONFIG.mine' for optimal performance.
+===iter 3===
+Using security parameter 40
+Trying to run 32-bit computation
+[zico] use_encryption: 1
+Adding threads
+Thread size: 1
+Adding threads
+Thread size: 1
+ZKP failed
+The following benchmarks are including preprocessing (offline phase).
+Time = 0.401785 seconds 
+Data sent = 5.11621 MB in ~46 rounds (party 1 only; use '-v' for more details)
+Global data sent = 15.3486 MB (all parties)
+This virtual machine was compiled with GCC. Recompile with 'CXX = clang++' in 'CONFIG.mine' for optimal performance.
+===iter 4===
+Using security parameter 40
+Trying to run 32-bit computation
+[zico] use_encryption: 1
+Adding threads
+Thread size: 1
+Adding threads
+Thread size: 1
+ZKP failed
+The following benchmarks are including preprocessing (offline phase).
+Time = 0.386725 seconds 
+Data sent = 5.11621 MB in ~46 rounds (party 1 only; use '-v' for more details)
+Global data sent = 15.3486 MB (all parties)
+This virtual machine was compiled with GCC. Recompile with 'CXX = clang++' in 'CONFIG.mine' for optimal performance.
+===iter 5===
+Using security parameter 40
+Trying to run 32-bit computation
+[zico] use_encryption: 1
+Adding threads
+Thread size: 1
+Adding threads
+Thread size: 1
+ZKP failed
+The following benchmarks are including preprocessing (offline phase).
+Time = 0.398424 seconds 
+Data sent = 5.11621 MB in ~46 rounds (party 1 only; use '-v' for more details)
+Global data sent = 15.3486 MB (all parties)
+This virtual machine was compiled with GCC. Recompile with 'CXX = clang++' in 'CONFIG.mine' for optimal performance.
+===iter 6===
+Using security parameter 40
+Trying to run 32-bit computation
+[zico] use_encryption: 1
+Adding threads
+Thread size: 1
+Adding threads
+Thread size: 1
+ZKP failed
+The following benchmarks are including preprocessing (offline phase).
+Time = 0.377993 seconds 
+Data sent = 5.11621 MB in ~46 rounds (party 1 only; use '-v' for more details)
+Global data sent = 15.3486 MB (all parties)
+This virtual machine was compiled with GCC. Recompile with 'CXX = clang++' in 'CONFIG.mine' for optimal performance.
+===iter 7===
+Using security parameter 40
+Trying to run 32-bit computation
+[zico] use_encryption: 1
+Adding threads
+Thread size: 1
+Adding threads
+Thread size: 1
+ZKP failed
+The following benchmarks are including preprocessing (offline phase).
+Time = 0.412454 seconds 
+Data sent = 5.11621 MB in ~46 rounds (party 1 only; use '-v' for more details)
+Global data sent = 15.3486 MB (all parties)
+This virtual machine was compiled with GCC. Recompile with 'CXX = clang++' in 'CONFIG.mine' for optimal performance.
+===iter 8===
+Using security parameter 40
+Trying to run 32-bit computation
+[zico] use_encryption: 1
+Adding threads
+Thread size: 1
+Adding threads
+Thread size: 1
+ZKP failed
+The following benchmarks are including preprocessing (offline phase).
+Time = 0.404837 seconds 
+Data sent = 5.11621 MB in ~46 rounds (party 1 only; use '-v' for more details)
+Global data sent = 15.3486 MB (all parties)
+This virtual machine was compiled with GCC. Recompile with 'CXX = clang++' in 'CONFIG.mine' for optimal performance.
+===iter 9===
+Using security parameter 40
+Trying to run 32-bit computation
+[zico] use_encryption: 1
+Adding threads
+Thread size: 1
+Adding threads
+Thread size: 1
+ZKP failed
+The following benchmarks are including preprocessing (offline phase).
+Time = 0.42629 seconds 
+Data sent = 5.11621 MB in ~46 rounds (party 1 only; use '-v' for more details)
+Global data sent = 15.3486 MB (all parties)
+This virtual machine was compiled with GCC. Recompile with 'CXX = clang++' in 'CONFIG.mine' for optimal performance.
+===iter 10===
+Using security parameter 40
+Trying to run 32-bit computation
+[zico] use_encryption: 1
+Adding threads
+Thread size: 1
+Adding threads
+Thread size: 1
+ZKP failed
+The following benchmarks are including preprocessing (offline phase).
+Time = 0.444125 seconds 
+Data sent = 5.11621 MB in ~46 rounds (party 1 only; use '-v' for more details)
+Global data sent = 15.3486 MB (all parties)
+This virtual machine was compiled with GCC. Recompile with 'CXX = clang++' in 'CONFIG.mine' for optimal performance.

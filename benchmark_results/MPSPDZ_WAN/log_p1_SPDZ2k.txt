@@ -1,0 +1,110 @@
+===iter 1===
+Using SPDZ2k security parameter 32
+Using security parameter 40
+Trying to run 32-bit computation
+[zico] use_encryption: 0
+REUSING DATA - ONLY FOR BENCHMARKING
+The following benchmarks are excluding preprocessing (offline phase).
+Time = 10.6269 seconds 
+Data sent = 16.0004 MB in ~69 rounds (party 1 only; use '-v' for more details)
+Global data sent = 64.0013 MB (all parties)
+This virtual machine was compiled with GCC. Recompile with 'CXX = clang++' in 'CONFIG.mine' for optimal performance.
+===iter 2===
+Using SPDZ2k security parameter 32
+Using security parameter 40
+Trying to run 32-bit computation
+[zico] use_encryption: 0
+REUSING DATA - ONLY FOR BENCHMARKING
+The following benchmarks are excluding preprocessing (offline phase).
+Time = 10.6223 seconds 
+Data sent = 16.0004 MB in ~69 rounds (party 1 only; use '-v' for more details)
+Global data sent = 64.0013 MB (all parties)
+This virtual machine was compiled with GCC. Recompile with 'CXX = clang++' in 'CONFIG.mine' for optimal performance.
+===iter 3===
+Using SPDZ2k security parameter 32
+Using security parameter 40
+Trying to run 32-bit computation
+[zico] use_encryption: 0
+REUSING DATA - ONLY FOR BENCHMARKING
+The following benchmarks are excluding preprocessing (offline phase).
+Time = 10.6226 seconds 
+Data sent = 16.0004 MB in ~69 rounds (party 1 only; use '-v' for more details)
+Global data sent = 64.0013 MB (all parties)
+This virtual machine was compiled with GCC. Recompile with 'CXX = clang++' in 'CONFIG.mine' for optimal performance.
+===iter 4===
+Using SPDZ2k security parameter 32
+Using security parameter 40
+Trying to run 32-bit computation
+[zico] use_encryption: 0
+REUSING DATA - ONLY FOR BENCHMARKING
+The following benchmarks are excluding preprocessing (offline phase).
+Time = 10.6343 seconds 
+Data sent = 16.0004 MB in ~69 rounds (party 1 only; use '-v' for more details)
+Global data sent = 64.0013 MB (all parties)
+This virtual machine was compiled with GCC. Recompile with 'CXX = clang++' in 'CONFIG.mine' for optimal performance.
+===iter 5===
+Using SPDZ2k security parameter 32
+Using security parameter 40
+Trying to run 32-bit computation
+[zico] use_encryption: 0
+REUSING DATA - ONLY FOR BENCHMARKING
+The following benchmarks are excluding preprocessing (offline phase).
+Time = 10.5236 seconds 
+Data sent = 16.0004 MB in ~69 rounds (party 1 only; use '-v' for more details)
+Global data sent = 64.0013 MB (all parties)
+This virtual machine was compiled with GCC. Recompile with 'CXX = clang++' in 'CONFIG.mine' for optimal performance.
+===iter 6===
+Using SPDZ2k security parameter 32
+Using security parameter 40
+Trying to run 32-bit computation
+[zico] use_encryption: 0
+REUSING DATA - ONLY FOR BENCHMARKING
+The following benchmarks are excluding preprocessing (offline phase).
+Time = 10.5294 seconds 
+Data sent = 16.0004 MB in ~69 rounds (party 1 only; use '-v' for more details)
+Global data sent = 64.0013 MB (all parties)
+This virtual machine was compiled with GCC. Recompile with 'CXX = clang++' in 'CONFIG.mine' for optimal performance.
+===iter 7===
+Using SPDZ2k security parameter 32
+Using security parameter 40
+Trying to run 32-bit computation
+[zico] use_encryption: 0
+REUSING DATA - ONLY FOR BENCHMARKING
+The following benchmarks are excluding preprocessing (offline phase).
+Time = 10.7326 seconds 
+Data sent = 16.0004 MB in ~69 rounds (party 1 only; use '-v' for more details)
+Global data sent = 64.0013 MB (all parties)
+This virtual machine was compiled with GCC. Recompile with 'CXX = clang++' in 'CONFIG.mine' for optimal performance.
+===iter 8===
+Using SPDZ2k security parameter 32
+Using security parameter 40
+Trying to run 32-bit computation
+[zico] use_encryption: 0
+REUSING DATA - ONLY FOR BENCHMARKING
+The following benchmarks are excluding preprocessing (offline phase).
+Time = 10.6358 seconds 
+Data sent = 16.0004 MB in ~69 rounds (party 1 only; use '-v' for more details)
+Global data sent = 64.0013 MB (all parties)
+This virtual machine was compiled with GCC. Recompile with 'CXX = clang++' in 'CONFIG.mine' for optimal performance.
+===iter 9===
+Using SPDZ2k security parameter 32
+Using security parameter 40
+Trying to run 32-bit computation
+[zico] use_encryption: 0
+REUSING DATA - ONLY FOR BENCHMARKING
+The following benchmarks are excluding preprocessing (offline phase).
+Time = 10.6874 seconds 
+Data sent = 16.0004 MB in ~69 rounds (party 1 only; use '-v' for more details)
+Global data sent = 64.0013 MB (all parties)
+This virtual machine was compiled with GCC. Recompile with 'CXX = clang++' in 'CONFIG.mine' for optimal performance.
+===iter 10===
+Using SPDZ2k security parameter 32
+Using security parameter 40
+Trying to run 32-bit computation
+[zico] use_encryption: 0
+REUSING DATA - ONLY FOR BENCHMARKING
+The following benchmarks are excluding preprocessing (offline phase).
+Time = 10.5478 seconds 
+Data sent = 16.0004 MB in ~69 rounds (party 1 only; use '-v' for more details)
+Global data sent = 64.0013 MB (all parties)
+This virtual machine was compiled with GCC. Recompile with 'CXX = clang++' in 'CONFIG.mine' for optimal performance.

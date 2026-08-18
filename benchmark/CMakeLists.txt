@@ -1,0 +1,40 @@
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/benchmarks)
+
+set(benchbin "")
+
+macro(add_benchmark source_name)
+    add_executable(${source_name} ${source_name}.cpp utils.cpp)
+    if(VERIFY_MOD_2_256)
+        target_compile_definitions(${source_name} PRIVATE VERIFY_MOD_2_256)
+    endif()
+    if(MSVC)
+        target_compile_options(${source_name} PRIVATE /W4 /WX ${OpenMP_CXX_FLAGS})
+    else()
+        target_compile_options(${source_name} PRIVATE -Wall -Wextra -Wpedantic ${OpenMP_CXX_FLAGS})
+    endif()
+    IF(APPLE)
+    target_link_libraries(${source_name} Boost::program_options nlohmann_json::nlohmann_json ring-zkFLIOP GMP EMPTool OpenMP::OpenMP_CXX ${OpenMP_CXX_FLAGS})
+    ELSE()
+    target_link_libraries(${source_name} Boost::program_options nlohmann_json::nlohmann_json ring-zkFLIOP Threads::Threads GMP EMPTool OpenMP::OpenMP_CXX ${OpenMP_CXX_FLAGS})
+    ENDIF()
+    list(APPEND benchbin ${source_name})
+endmacro()
+
+
+if(VERIFY_MOD_2_256)
+    message("Verification over 256 bit integers active")
+endif()
+
+add_benchmark(fliop)
+add_benchmark(semi)
+add_benchmark(semi_othercirc)
+add_benchmark(omp_test)
+add_benchmark(fliop_dotp)
+add_benchmark(semi_dotp)
+
+add_custom_target(benchmarks)
+add_dependencies(benchmarks ${benchbin})
+
+file(COPY ../scripts/network.py DESTINATION ${PROJECT_BINARY_DIR}/benchmarks)
+file(COPY ../scripts/net_config.json DESTINATION ${PROJECT_BINARY_DIR}/benchmarks)
+file(COPY ../scripts/benchmark_full.sh DESTINATION ${PROJECT_BINARY_DIR}/benchmarks)

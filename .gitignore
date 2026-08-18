@@ -1,0 +1,6 @@
+build/
+.vscode/
+*.DS_Store
+*__pycache__*
+nohup.out
+iteration_log.txt
