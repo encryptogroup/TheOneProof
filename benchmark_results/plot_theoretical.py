@@ -55,10 +55,10 @@ for mode in range(2):
         cost_ours.append(our_verification(MULTS, 3, n, NUM_BITS, s, SSEC, CSEC, False, False)[mode] / divider)
         cost_LEDHHZS24.append(LEDHHZS24(MULTS, 3, n, NUM_BITS, s, SSEC, CSEC, False, False)[mode] / divider)
 
-    ax[mode].plot(parties, cost_BGIN21, color=C1, label="[13]", linestyle="dotted")
+    ax[mode].plot(parties, cost_BGIN21, color=C1, label="[12]", linestyle="dotted")
     ax[mode].plot(parties, cost_LEDHHZS24, color=C2, label="[46]", linestyle="dashed")
     ax[mode].plot(parties, cost_ours, color=C3, label=r"$\bf{ours}$")
-    print(f"[13]: {min(cost_BGIN21):6.2f}--{max(cost_BGIN21):6.2f} KiB")
+    print(f"[12]: {min(cost_BGIN21):6.2f}--{max(cost_BGIN21):6.2f} KiB")
     print(f"[46]: {min(cost_LEDHHZS24):6.2f}--{max(cost_LEDHHZS24):6.2f} KiB")
     print(f"ours: {min(cost_ours):6.2f}--{max(cost_ours):6.2f} KiB")
 
