@@ -1,4 +1,4 @@
-# One Proof to Rule Them All: Practical, Sublinear Verification for Actively Secure MPC on Z_2^l with Dishonest Majority and a Dealer
+# One Proof to Rule Them All: Practical, Sublinear Verification for Actively Secure MPC on Z2k with Dishonest Majority and a Dealer
 
 This repository contains the implementation of our novel (n+1)-party protocol with active security, utilizing zk-FLIOPS.
 The protocol is implemented in C++17 and [CMake](https://cmake.org/) is used as the build system.
