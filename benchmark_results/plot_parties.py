@@ -3,6 +3,7 @@ import statistics
 from contextlib import ExitStack
 import matplotlib.pyplot as plt
 import numpy as np
+import sys
 
 import table_general
 
@@ -11,6 +12,13 @@ DEPTH = 30
 PARTIES = [2,3,4,5,10,15,20,25,30]
 MULTS = 1000000
 THREADS = 0 # no OMP
+
+if "r" in sys.argv:
+    PATH_SELECTOR = "_reproduced"
+    print("using freshly benchmarked data")
+else:
+    PATH_SELECTOR = ""
+    print("using data from repository")
 
 # Wrapper, as table_general.aggregate aggregates LAN and WAN in parallel and we only want to
 # aggregate one here, so just feed as LAN and WAN and ignore WAN results.
@@ -72,8 +80,8 @@ if __name__ == "__main__":
                 rec_strat_fliop = "pking-1"
                 rec_strat_semi = "pking"
 
-            files_fliop = [stack.enter_context(open(f"{NETWORK}/p{p}/fliop-m{MULTS}-n{n}-c{COMPR}-d{DEPTH}-{rec_strat_fliop}-t{THREADS}.txt", 'r')).readlines() for p in range(n + 1)]
-            files_semi = [stack.enter_context(open(f"{NETWORK}/p{p}/semi-m{MULTS}-n{n}-d{DEPTH}-{rec_strat_semi}-t{THREADS}.txt", 'r')).readlines() for p in range(n + 1)]
+            files_fliop = [stack.enter_context(open(f"{NETWORK}{PATH_SELECTOR}/p{p}/fliop-m{MULTS}-n{n}-c{COMPR}-d{DEPTH}-{rec_strat_fliop}-t{THREADS}.txt", 'r')).readlines() for p in range(n + 1)]
+            files_semi = [stack.enter_context(open(f"{NETWORK}{PATH_SELECTOR}/p{p}/semi-m{MULTS}-n{n}-d{DEPTH}-{rec_strat_semi}-t{THREADS}.txt", 'r')).readlines() for p in range(n + 1)]
             assert all(len(f) == len(files_fliop[0]) for f in files_fliop)
             assert all(len(f) == len(files_semi[0]) for f in files_semi)
 
@@ -112,8 +120,8 @@ if __name__ == "__main__":
                 rec_strat_fliop = "pking-1"
                 rec_strat_semi = "pking"
 
-            files_fliop = [stack.enter_context(open(f"{NETWORK}/p{p}/fliop-m{MULTS}-n{n}-c{COMPR}-d{DEPTH}-{rec_strat_fliop}-t{THREADS}.txt", 'r')).readlines() for p in range(n + 1)]
-            files_semi = [stack.enter_context(open(f"{NETWORK}/p{p}/semi-m{MULTS}-n{n}-d{DEPTH}-{rec_strat_semi}-t{THREADS}.txt", 'r')).readlines() for p in range(n + 1)]
+            files_fliop = [stack.enter_context(open(f"{NETWORK}{PATH_SELECTOR}/p{p}/fliop-m{MULTS}-n{n}-c{COMPR}-d{DEPTH}-{rec_strat_fliop}-t{THREADS}.txt", 'r')).readlines() for p in range(n + 1)]
+            files_semi = [stack.enter_context(open(f"{NETWORK}{PATH_SELECTOR}/p{p}/semi-m{MULTS}-n{n}-d{DEPTH}-{rec_strat_semi}-t{THREADS}.txt", 'r')).readlines() for p in range(n + 1)]
             assert all(len(f) == len(files_fliop[0]) for f in files_fliop)
             assert all(len(f) == len(files_semi[0]) for f in files_semi)
 
@@ -148,4 +156,5 @@ if __name__ == "__main__":
     fig.set_size_inches(5, 3.5)
     ax[1][0].legend(loc="upper left")
     plt.savefig('plots/plot_parties_square.pdf')
+    print("Plot written to benchmark_results/plots/plot_parties_square.pdf")
     plt.show()

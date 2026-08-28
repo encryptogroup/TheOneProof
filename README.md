@@ -85,7 +85,7 @@ sudo sysctl -w net.ipv4.tcp_wmem='40960 163840 41943040'
 sudo python3 network.py start 31 [LAN/WAN]
 
 # This will take a while...
-nohup sudo ./benchmark_full.sh &
+nohup sudo ./benchmark_ours.sh &
 # Results will be written to files in build/benchmarks/p[i] for party i, party 0 is the dealer
 ```
 
@@ -116,7 +116,7 @@ sudo sysctl -w net.ipv4.tcp_wmem='40960 163840 41943040'
 sudo python3 network.py start 31 [LAN/WAN]
 
 # This will take a while...
-nohup sudo ./benchmark_full.sh &
+nohup sudo ./benchmark_ours.sh &
 # Results will be written to files in build/benchmarks/p[i] for party i, party 0 is the dealer
 ```
 
@@ -130,8 +130,8 @@ To build and run the docker image, execute the following commands from the root 
 
 # Then:
 # Setting up and running container
-sudo docker buildx build -t zkfliop . 
-sudo docker run -it -v $(pwd):$(pwd) -w $(pwd) --cap-add=NET_ADMIN zkfliop
+sudo docker buildx build --network=host -t zkfliop . 
+sudo docker run -it -v $(pwd):$(pwd) -w $(pwd) --privileged zkfliop
 # Proceed working inside the container...
 ```
 

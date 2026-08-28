@@ -37,4 +37,4 @@ add_dependencies(benchmarks ${benchbin})
 
 file(COPY ../scripts/network.py DESTINATION ${PROJECT_BINARY_DIR}/benchmarks)
 file(COPY ../scripts/net_config.json DESTINATION ${PROJECT_BINARY_DIR}/benchmarks)
-file(COPY ../scripts/benchmark_full.sh DESTINATION ${PROJECT_BINARY_DIR}/benchmarks)
+file(COPY ../scripts/benchmark_ours.sh DESTINATION ${PROJECT_BINARY_DIR}/benchmarks)

@@ -4,6 +4,11 @@ import subprocess
 import sys
 from typing import List
 
+if len(sys.argv) > 4 and sys.argv[4] == "silent":
+    ECHO = False
+else:
+    ECHO = True
+
 def start_virtual_network(n_parties, bandwidth, delay):
     #####
     # Bridge:
@@ -105,7 +110,8 @@ def get_ip(namespace: int) -> str:
 
 def run_commands(commands: List[str]) -> None:
     for command in commands:
-        print('+ Executing command"{}"'.format(command))
+        if ECHO:
+            print('+ Executing command"{}"'.format(command))
         subprocess.check_call(command, shell=True)
 
 if __name__ == "__main__":

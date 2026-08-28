@@ -20,10 +20,16 @@ M_LABELS = {
     10000000: "10M"
 }
 
-if len(sys.argv) > 1 and sys.argv[1] == "latex":
+if "latex" in sys.argv:
     LATEX = True
 else:
     LATEX = False
+if "r" in sys.argv:
+    PATH_SELECTOR = "_reproduced"
+    print("using freshly benchmarked data")
+else:
+    PATH_SELECTOR = ""
+    print("using data from repository")
 
 def get_row(lan_semi, lan_fliop, wan_semi, wan_fliop):
     off_com_semi, on_com_semi, rounds_semi, off_lan_semi, on_lan_semi, off_wan_semi, on_wan_semi = aggregate(lan_semi, wan_semi, 1)
@@ -38,12 +44,12 @@ if __name__ == "__main__":
         print(" #dp | dim. |  communication | r. |   time LAN   |   time WAN   ")
     for number, d in DIM:
         with ExitStack() as stack:
-            files_LAN_semi = [stack.enter_context(open(f"LAN/p{p}/semi-dotp-d{d}-nn{number}-n{PARTIES}-d{DEPTH}-pking-t{THREADS}.txt", 'r')).readlines() for p in range(PARTIES + 1)]
-            files_WAN_semi = [stack.enter_context(open(f"WAN/p{p}/semi-dotp-d{d}-nn{number}-n{PARTIES}-d{DEPTH}-pking-t{THREADS}.txt", 'r')).readlines() for p in range(PARTIES + 1)]
+            files_LAN_semi = [stack.enter_context(open(f"LAN{PATH_SELECTOR}/p{p}/semi-dotp-d{d}-nn{number}-n{PARTIES}-d{DEPTH}-pking-t{THREADS}.txt", 'r')).readlines() for p in range(PARTIES + 1)]
+            files_WAN_semi = [stack.enter_context(open(f"WAN{PATH_SELECTOR}/p{p}/semi-dotp-d{d}-nn{number}-n{PARTIES}-d{DEPTH}-pking-t{THREADS}.txt", 'r')).readlines() for p in range(PARTIES + 1)]
             assert all(len(f) == len(files_LAN_semi[0]) for f in files_LAN_semi)
             assert all(len(f) == len(files_WAN_semi[0]) for f in files_WAN_semi)
-            files_LAN_fliop = [stack.enter_context(open(f"LAN/p{p}/fliop-dotp-d{d}-nn{number}-n{PARTIES}-c{COMPR}-d{DEPTH}-pking-1-t{THREADS}.txt", 'r')).readlines() for p in range(PARTIES + 1)]
-            files_WAN_fliop = [stack.enter_context(open(f"WAN/p{p}/fliop-dotp-d{d}-nn{number}-n{PARTIES}-c{COMPR}-d{DEPTH}-pking-1-t{THREADS}.txt", 'r')).readlines() for p in range(PARTIES + 1)]
+            files_LAN_fliop = [stack.enter_context(open(f"LAN{PATH_SELECTOR}/p{p}/fliop-dotp-d{d}-nn{number}-n{PARTIES}-c{COMPR}-d{DEPTH}-pking-1-t{THREADS}.txt", 'r')).readlines() for p in range(PARTIES + 1)]
+            files_WAN_fliop = [stack.enter_context(open(f"WAN{PATH_SELECTOR}/p{p}/fliop-dotp-d{d}-nn{number}-n{PARTIES}-c{COMPR}-d{DEPTH}-pking-1-t{THREADS}.txt", 'r')).readlines() for p in range(PARTIES + 1)]
             assert all(len(f) == len(files_LAN_fliop[0]) for f in files_LAN_fliop)
             assert all(len(f) == len(files_WAN_fliop[0]) for f in files_WAN_fliop)
             if LATEX:

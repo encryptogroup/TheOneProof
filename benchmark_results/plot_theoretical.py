@@ -71,4 +71,5 @@ print(f"\nsemi-honest: offline {semi_setup_cost:6.2f} MiB, online {(semi_online_
 fig.set_size_inches(5.5, 2.2)
 ax[0].legend()
 plt.savefig('plots/plot_theoretical.pdf')
+print("Plot written to benchmark_results/plots/plot_theoretical.pdf")
 plt.show()

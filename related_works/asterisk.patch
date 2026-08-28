@@ -1,0 +1,918 @@
+diff --git a/benchmark/CMakeLists.txt b/benchmark/CMakeLists.txt
+index 05fc54c..addb9d8 100644
+--- a/benchmark/CMakeLists.txt
++++ b/benchmark/CMakeLists.txt
+@@ -13,7 +13,8 @@ add_benchmark(Darkpool_CDA)
+ add_benchmark(asterisk_mpc)
+ add_benchmark(asterisk_online)
+ add_benchmark(asterisk_offline)
++add_benchmark(asterisk_comparison)
+ add_benchmark(assistedmpc_offline)
+ 
+ add_custom_target(benchmarks)
+ add_dependencies(benchmarks ${benchbin})
+diff --git a/benchmark/asterisk_comparison.cpp b/benchmark/asterisk_comparison.cpp
+new file mode 100644
+index 0000000..483c177
+--- /dev/null
++++ b/benchmark/asterisk_comparison.cpp
+@@ -0,0 +1,286 @@
++#include <io/netmp.h>
++#include <asterisk/offline_evaluator.h>
++#include <asterisk/online_evaluator.h>
++#include <utils/circuit.h>
++
++#include <algorithm>
++#include <boost/program_options.hpp>
++#include <cmath>
++#include <iostream>
++#include <memory>
++
++#include "utils.h"
++
++using namespace asterisk;
++using json = nlohmann::json;
++namespace bpo = boost::program_options;
++
++// CHANGES: Added symmetrical layer of additions after each multiplication layer
++common::utils::Circuit<Field> generateCircuit(size_t gates_per_level, size_t depth) {
++    common::utils::Circuit<Field> circ;
++
++    std::vector<common::utils::wire_t> level_inputs(gates_per_level);
++    std::generate(level_inputs.begin(), level_inputs.end(),
++                [&]() { return circ.newInputWire(); });
++    for (size_t i = 0; i < gates_per_level; ++i) {
++        circ.setAsOutput(level_inputs[i]);
++    }
++
++    for (size_t d = 0; d < depth; ++d) {
++        std::vector<common::utils::wire_t> level_inter(gates_per_level);
++        std::vector<common::utils::wire_t> level_outputs(gates_per_level);
++
++        for (size_t i = 0; i < gates_per_level - 1; ++i) {
++            level_inter[i] = circ.addGate(common::utils::GateType::kMul, level_inputs[i],
++                                      level_inputs[i + 1]);
++        }
++        level_inter[gates_per_level - 1] =
++            circ.addGate(common::utils::GateType::kMul, level_inputs[gates_per_level - 1],
++                     level_inputs[0]);
++
++        for (size_t i = 0; i < gates_per_level - 1; ++i) {
++            level_outputs[i] = circ.addGate(common::utils::GateType::kAdd, level_inter[i],
++                                      level_inter[i + 1]);
++        }
++        level_outputs[gates_per_level - 1] =
++            circ.addGate(common::utils::GateType::kAdd, level_inter[gates_per_level - 1],
++                     level_inter[0]);
++        
++        level_inputs = std::move(level_outputs);
++    }
++    for (auto i : level_inputs) {
++        circ.setAsOutput(i);
++    }
++
++    return circ;
++}
++
++// CHANGES: Removed unused generateCircuitwM3, generateCircuitwM4
++
++void benchmark(const bpo::variables_map& opts) {
++    bool save_output = false;
++    std::string save_file;
++    if (opts.count("output") != 0) {
++        save_output = true;
++        save_file = opts["output"].as<std::string>();
++    }
++
++    auto gates_per_level = opts["gates-per-level"].as<size_t>();
++    auto depth = opts["depth"].as<size_t>();
++    auto nP = opts["num-parties"].as<size_t>();
++    auto pid = opts["pid"].as<size_t>();
++    auto security_param = opts["security-param"].as<size_t>();
++    auto threads = opts["threads"].as<size_t>();
++    auto seed = opts["seed"].as<size_t>();
++    auto repeat = opts["repeat"].as<size_t>();
++    auto port = opts["port"].as<int>();
++
++    std::shared_ptr<io::NetIOMP> network = nullptr;
++    if (opts["localhost"].as<bool>()) {
++        network = std::make_shared<io::NetIOMP>(pid, nP+1, port, nullptr, true);
++    }
++    else {
++        std::ifstream fnet(opts["net-config"].as<std::string>());
++        if (!fnet.good()) {
++        fnet.close();
++        throw std::runtime_error("Could not open network config file");
++        }
++        json netdata;
++        fnet >> netdata;
++        fnet.close();
++
++        std::vector<std::string> ipaddress(nP+1);
++        std::array<char*, 128> ip{};
++        for (size_t i = 0; i < nP+1; ++i) {
++            ipaddress[i] = netdata[i].get<std::string>();
++            ip[i] = ipaddress[i].data();
++        }
++
++        network = std::make_shared<io::NetIOMP>(pid, nP+1, port, ip.data(), false);
++    }
++
++    json output_data;
++    // CHANGES: Included number of bits of number representation.
++    output_data["details"] = {{"gates_per_level", gates_per_level},
++                                {"depth", depth},
++                                {"num-parties", nP},
++                                {"pid", pid},
++                                {"security_param", security_param},
++                                {"threads", threads},
++                                {"seed", seed},
++                                {"field_elem_representation_size_bytes", FIELDSIZE},
++                                {"repeat", repeat}};
++    // CHANGES: Separately save benchmark setup data
++    output_data["benchmarks_setup"] = json::array();
++    output_data["benchmarks"] = json::array();
++
++    std::cout << "--- Details ---\n";
++    for (const auto& [key, value] : output_data["details"].items()) {
++        std::cout << key << ": " << value << "\n";
++    }
++    std::cout << std::endl;
++
++    auto circ = generateCircuit(gates_per_level, depth).orderGatesByLevel();
++    std::cout << "--- Circuit ---\n";
++    std::cout << circ << std::endl;
++
++
++    std::unordered_map<common::utils::wire_t, int> input_pid_map;
++    std::unordered_map<common::utils::wire_t, Field> input_map;
++    for (const auto& g : circ.gates_by_level[0]) {
++        if (g->type == common::utils::GateType::kInp) {
++            input_pid_map[g->out] = 1;
++            input_map[g->out] = 5;
++        }
++    }
++
++    emp::PRG prg(&emp::zero_block, seed);
++    
++
++    for (size_t r = 0; r < repeat; ++r) {
++        // CHANGES: Separately measure setup and online
++
++        OfflineEvaluator off_eval(nP, pid, network, circ, security_param, threads, seed);
++
++        network->sync();
++
++        StatsPoint start_setup(*network);
++        auto preproc = off_eval.run(input_pid_map);
++        StatsPoint end_setup(*network);
++        auto rbench_setup = end_setup - start_setup;
++        output_data["benchmarks_setup"].push_back(rbench_setup);
++        
++        OnlineEvaluator eval(nP, pid, network, std::move(preproc), circ, 
++                    security_param, threads, seed);
++
++        
++        
++        eval.setRandomInputs();
++
++        network->sync();
++
++        StatsPoint start(*network);
++        for (size_t i = 0; i < circ.gates_by_level.size(); ++i) {
++            eval.evaluateGatesAtDepth(i);
++            
++        }
++        // auto res = eval.evaluateCircuit(input_map);
++
++        StatsPoint end(*network);
++        auto rbench = end - start;
++        output_data["benchmarks"].push_back(rbench);
++
++        size_t bytes_sent = 0;
++        for (const auto& val : rbench["communication"]) {
++            bytes_sent += val.get<int64_t>();
++        }
++        size_t bytes_sent_setup = 0;
++        for (const auto& val : rbench_setup["communication"]) {
++            bytes_sent_setup += val.get<int64_t>();
++        }
++
++        std::cout << "--- Repetition " << r + 1 << " ---\n";
++        std::cout << "setup time: " << rbench_setup["time"] << " ms\n";
++        std::cout << "setup sent: " << bytes_sent_setup << " bytes\n";
++        std::cout << "time: " << rbench["time"] << " ms\n";
++        std::cout << "sent: " << bytes_sent << " bytes\n";
++
++        std::cout << std::endl;
++    }
++    output_data["stats"] = {{"peak_virtual_memory", peakVirtualMemory()},
++                            {"peak_resident_set_size", peakResidentSetSize()}};
++
++    std::cout << "--- Statistics ---\n";
++    for (const auto& [key, value] : output_data["stats"].items()) {
++        std::cout << key << ": " << value << "\n";
++    }
++    std::cout << std::endl;
++
++    if (save_output) {
++        saveJson(output_data, save_file);
++    }
++}
++
++// clang-format off
++bpo::options_description programOptions() {
++    bpo::options_description desc("Following options are supported by config file too.");
++    desc.add_options()
++        ("gates-per-level,g", bpo::value<size_t>()->required(), "Number of gates at each level.")
++        ("depth,d", bpo::value<size_t>()->required(), "Multiplicative depth of circuit.")
++        ("num-parties,n", bpo::value<size_t>()->required(), "Number of parties.")
++        ("pid,p", bpo::value<size_t>()->required(), "Party ID.")
++        ("security-param", bpo::value<size_t>()->default_value(128), "Security parameter in bits.")
++        ("threads,t", bpo::value<size_t>()->default_value(6), "Number of threads (recommended 6).")
++        ("seed", bpo::value<size_t>()->default_value(200), "Value of the random seed.")
++        ("net-config", bpo::value<std::string>(), "Path to JSON file containing network details of all parties.")
++        ("localhost", bpo::bool_switch(), "All parties are on same machine.")
++        ("port", bpo::value<int>()->default_value(10000), "Base port for networking.")
++        ("output,o", bpo::value<std::string>(), "File to save benchmarks.")
++        ("repeat,r", bpo::value<size_t>()->default_value(1), "Number of times to run benchmarks.");
++
++  return desc;
++}
++// clang-format on
++
++int main(int argc, char* argv[]) {
++    ZZ_p::init(conv<ZZ>("1099511627689")); // 40 bit prime
++    auto prog_opts(programOptions());
++
++    bpo::options_description cmdline(
++      "Benchmark online phase for multiplication gates.");
++    cmdline.add(prog_opts);
++    cmdline.add_options()(
++      "config,c", bpo::value<std::string>(),
++      "configuration file for easy specification of cmd line arguments")(
++      "help,h", "produce help message");
++
++    bpo::variables_map opts;
++    bpo::store(bpo::command_line_parser(argc, argv).options(cmdline).run(), opts);
++
++    if (opts.count("help") != 0) {
++        std::cout << cmdline << std::endl;
++        return 0;
++    }
++
++    if (opts.count("config") > 0) {
++        std::string cpath(opts["config"].as<std::string>());
++        std::ifstream fin(cpath.c_str());
++
++        if (fin.fail()) {
++            std::cerr << "Could not open configuration file at " << cpath << "\n";
++            return 1;
++        }
++
++        bpo::store(bpo::parse_config_file(fin, prog_opts), opts);
++    }
++
++    try {
++        bpo::notify(opts);
++
++        // Check if output file already exists.
++        /*if (opts.count("output") != 0) {
++            std::ifstream ftemp(opts["output"].as<std::string>());
++            if (ftemp.good()) {
++                ftemp.close();
++                throw std::runtime_error("Output file aready exists.");
++            }
++            ftemp.close();
++        }*/
++
++        if (!opts["localhost"].as<bool>() && (opts.count("net-config") == 0)) {
++            throw std::runtime_error("Expected one of 'localhost' or 'net-config'");
++        }
++    } catch (const std::exception& ex) {
++        std::cerr << ex.what() << std::endl;
++        return 1;
++    }
++
++    try {
++        benchmark(opts);
++    } catch (const std::exception& ex) {
++        std::cerr << ex.what() << "\nFatal error" << std::endl;
++        return 1;
++    }
++
++    return 0;
++}
+diff --git a/src/assistedMPC/offline_evaluator.cpp b/src/assistedMPC/offline_evaluator.cpp
+index bc94b10..647e473 100644
+--- a/src/assistedMPC/offline_evaluator.cpp
++++ b/src/assistedMPC/offline_evaluator.cpp
+@@ -30,12 +30,12 @@ namespace assistedMPC {
+             key = 0;
+             keySh[0] = 0;
+             for(int i = 1; i <= nP; i++) {
+-                randomizeZZp(rgen.pi(i), keySh[i], sizeof(Field));
++                randomizeZZp(rgen.pi(i), keySh[i], FIELDSIZE);
+                 key += keySh[i];
+             }
+         }
+         else {
+-            randomizeZZp(rgen.p0(), key, sizeof(Field));
++            randomizeZZp(rgen.p0(), key, FIELDSIZE);
+         }
+     }
+ 
+@@ -46,7 +46,7 @@ namespace assistedMPC {
+             Field key, std::vector<Field> keySh, std::vector<std::vector<Field>>& rand_sh) {
+ 
+         Field secret = Field(0);
+-        randomizeZZp(rgen.self(), secret, sizeof(Field));
++        randomizeZZp(rgen.self(), secret, FIELDSIZE);
+         randomShareSecret_Helper(nP, rgen, share, tpShare, secret, key, keySh, rand_sh);
+     }
+ 
+@@ -79,11 +79,11 @@ namespace assistedMPC {
+         tpShare.setKeySh(keySh[0]);
+         tpShare.setKey(key);
+         for(int i = 1; i < nP; i++) {
+-            randomizeZZp(rgen.self(), val, sizeof(Field));
++            randomizeZZp(rgen.self(), val, FIELDSIZE);
+             tpShare.pushValues(val);
+             rand_sh_sec[i-1].push_back(val);
+             valn += val;
+-            randomizeZZp(rgen.self(), tag, sizeof(Field));
++            randomizeZZp(rgen.self(), tag, FIELDSIZE);
+             tpShare.pushTags(tag);
+             rand_sh_sec[i-1].push_back(tag);
+             tagn += tag;
+@@ -110,7 +110,7 @@ namespace assistedMPC {
+             std::vector<Field> keySh, std::vector<std::vector<Field>>& rand_sh_party) {
+ 
+         Field secret = Field(0);
+-        randomizeZZp(rgen.self(), secret, sizeof(Field));
++        randomizeZZp(rgen.self(), secret, FIELDSIZE);
+         randomShareSecret_Helper(nP, rgen, share, tpShare, secret, key, keySh, rand_sh_party);
+         rand_sh_party[dealer-1].push_back(secret);
+ 
+@@ -144,13 +144,13 @@ namespace assistedMPC {
+             key = 0;
+             keySh[0] = 0;
+             for(int i = 1; i <= nP_; i++) {
+-                randomizeZZp(rgen_.pi(i), keySh[i], sizeof(Field));
++                randomizeZZp(rgen_.pi(i), keySh[i], FIELDSIZE);
+                 key += keySh[i];
+             }
+             key_sh_ = key;
+         }
+         else {
+-            randomizeZZp(rgen_.p0(), key, sizeof(Field));
++            randomizeZZp(rgen_.p0(), key, FIELDSIZE);
+             key_sh_ = key;
+         }
+ 
+@@ -337,13 +337,13 @@ namespace assistedMPC {
+             key = 0;
+             keySh[0] = 0;
+             for(int i = 1; i <= nP_; i++) {
+-                randomizeZZp(rgen_.pi(i), keySh[i], sizeof(Field));
++                randomizeZZp(rgen_.pi(i), keySh[i], FIELDSIZE);
+                 key += keySh[i];
+             }
+             key_sh_ = key;
+         }
+         else {
+-            randomizeZZp(rgen_.p0(), key, sizeof(Field));
++            randomizeZZp(rgen_.p0(), key, FIELDSIZE);
+             key_sh_ = key;
+         }
+ 
+@@ -560,7 +560,7 @@ namespace assistedMPC {
+                 for(size_t i = 0; i < b_rand_sh_party_num; i++) {
+                     offline_bool_comm[b_rand_sh_sec_num + b_rand_sh_num + i] = b_rand_sh_party[p-1][i];
+                 }
+-                network_->send(p, offline_arith_comm.data(), sizeof(Field) * arith_comm);
++                network_->send(p, offline_arith_comm.data(), FIELDSIZE * arith_comm);
+                 network_->send(p, offline_bool_comm.data(), sizeof(BoolRing) * bool_comm);
+             }
+         }
+@@ -588,7 +588,7 @@ namespace assistedMPC {
+             std::vector<Field> offline_arith_comm(arith_comm);
+             std::vector<BoolRing> offline_bool_comm(bool_comm);
+ 
+-            network_->recv(0, offline_arith_comm.data(), sizeof(Field) * arith_comm);
++            network_->recv(0, offline_arith_comm.data(), FIELDSIZE * arith_comm);
+             network_->recv(0, offline_bool_comm.data(), sizeof(BoolRing) * bool_comm);
+ 
+             rand_sh.resize(rand_sh_num);
+diff --git a/src/asterisk/offline_evaluator.cpp b/src/asterisk/offline_evaluator.cpp
+index a1debe6..bf97810 100644
+--- a/src/asterisk/offline_evaluator.cpp
++++ b/src/asterisk/offline_evaluator.cpp
+@@ -31,12 +31,12 @@ void OfflineEvaluator::keyGen(int nP, int pid, RandGenPool& rgen,
+     key = 0;
+     keySh[0] = 0;
+     for(int i = 1; i <= nP; i++) {
+-        randomizeZZp(rgen.pi(i), keySh[i], sizeof(Field));
++        randomizeZZp(rgen.pi(i), keySh[i], FIELDSIZE);
+         key += keySh[i];
+     }
+   }
+   else {
+-    randomizeZZp(rgen.p0(), key, sizeof(Field));
++    randomizeZZp(rgen.p0(), key, FIELDSIZE);
+   }
+ }
+ 
+@@ -69,10 +69,10 @@ void OfflineEvaluator::randomShare(int nP, int pid, RandGenPool& rgen, io::NetIO
+       
+       for(int i = 1; i <= nP; i++) {
+ 
+-        randomizeZZp(rgen.pi(i), val, sizeof(Field));
++        randomizeZZp(rgen.pi(i), val, FIELDSIZE);
+         tpShare.pushValues(val);
+         tpShare.setKeySh(keySh[i]);
+-        randomizeZZp(rgen.pi(i), tag, sizeof(Field));
++        randomizeZZp(rgen.pi(i), tag, FIELDSIZE);
+         if( i != nP) {
+           tpShare.pushTags(tag);
+           tagn += tag;
+@@ -88,10 +88,10 @@ void OfflineEvaluator::randomShare(int nP, int pid, RandGenPool& rgen, io::NetIO
+     }
+     else if(pid > 0) {
+       share.setKey(key);
+-      randomizeZZp(rgen.p0(), val, sizeof(Field));
++      randomizeZZp(rgen.p0(), val, FIELDSIZE);
+       share.pushValue(val);
+       
+-      randomizeZZp(rgen.p0(), tag, sizeof(Field));
++      randomizeZZp(rgen.p0(), tag, FIELDSIZE);
+       
+       if( pid != nP) {
+         share.pushTag(tag);
+@@ -126,10 +126,10 @@ void OfflineEvaluator::randomShareSecret(int nP, int pid, RandGenPool& rgen, io:
+       tpShare.setKeySh(keySh[0]);
+       tpShare.setKey(key);
+       for(int i = 1; i < nP; i++) {
+-        randomizeZZp(rgen.pi(i), val, sizeof(Field));
++        randomizeZZp(rgen.pi(i), val, FIELDSIZE);
+         tpShare.pushValues(val);
+         valn += val;
+-        randomizeZZp(rgen.pi(i), tag, sizeof(Field));
++        randomizeZZp(rgen.pi(i), tag, FIELDSIZE);
+         tpShare.pushTags(tag);
+         tagn += tag;
+         tpShare.setKeySh(keySh[i]);
+@@ -145,9 +145,9 @@ void OfflineEvaluator::randomShareSecret(int nP, int pid, RandGenPool& rgen, io:
+     else if(pid > 0) {
+       share.setKey(key);
+       if( pid != nP) {
+-        randomizeZZp(rgen.p0(), val, sizeof(Field));
++        randomizeZZp(rgen.p0(), val, FIELDSIZE);
+         share.pushValue(val);
+-        randomizeZZp(rgen.p0(), tag, sizeof(Field));
++        randomizeZZp(rgen.p0(), tag, FIELDSIZE);
+         share.pushTag(tag);
+       }
+       else if(pid == nP) {
+@@ -177,10 +177,10 @@ void OfflineEvaluator::randomShareWithParty(int nP, int pid, int dealer, RandGen
+   Field tagn = Field(0);
+   if( pid == 0) {
+     if(dealer != 0) {
+-      randomizeZZp(rgen.pi(dealer), secret, sizeof(Field));
++      randomizeZZp(rgen.pi(dealer), secret, FIELDSIZE);
+     }
+     else {
+-      randomizeZZp(rgen.self(), secret, sizeof(Field));
++      randomizeZZp(rgen.self(), secret, FIELDSIZE);
+     }
+     
+     share.pushValue(Field(0));
+@@ -194,10 +194,10 @@ void OfflineEvaluator::randomShareWithParty(int nP, int pid, int dealer, RandGen
+     tagF = key * secret;
+     for(int i = 1; i < nP; i++) {
+       tpShare.setKeySh(keySh[i]);
+-      randomizeZZp(rgen.pi(i), val, sizeof(Field));
++      randomizeZZp(rgen.pi(i), val, FIELDSIZE);
+       
+       tpShare.pushValues(val);
+-      randomizeZZp(rgen.pi(i), tag, sizeof(Field));
++      randomizeZZp(rgen.pi(i), tag, FIELDSIZE);
+       
+       tpShare.pushTags(tag);
+       valn += val;
+@@ -215,12 +215,12 @@ void OfflineEvaluator::randomShareWithParty(int nP, int pid, int dealer, RandGen
+   else if ( pid > 0) {
+     share.setKey(key);
+     if(pid == dealer) {
+-      randomizeZZp(rgen.p0(), secret, sizeof(Field));
++      randomizeZZp(rgen.p0(), secret, FIELDSIZE);
+     }
+     if(pid != nP) {
+-      randomizeZZp(rgen.p0(), val, sizeof(Field));
++      randomizeZZp(rgen.p0(), val, FIELDSIZE);
+       share.pushValue(val);
+-      randomizeZZp(rgen.p0(), tag, sizeof(Field)); 
++      randomizeZZp(rgen.p0(), tag, FIELDSIZE); 
+       share.pushTag(tag);
+     }
+     else if (pid == nP) {
+@@ -259,13 +259,13 @@ void OfflineEvaluator::setWireMasksParty(
+         key = 0;
+         keySh[0] = 0;
+         for(int i = 1; i <= nP_; i++) {
+-            randomizeZZp(rgen_.pi(i), keySh[i], sizeof(Field));
++            randomizeZZp(rgen_.pi(i), keySh[i], FIELDSIZE);
+             key += keySh[i];
+         }
+         key_sh_ = key;
+       }
+       else {
+-        randomizeZZp(rgen_.p0(), key, sizeof(Field));
++        randomizeZZp(rgen_.p0(), key, FIELDSIZE);
+         key_sh_ = key;
+       }
+ 
+@@ -581,7 +581,7 @@ void OfflineEvaluator::setWireMasksParty(
+           
+           // padded_val = r - delta_x, sampled by all the parties together
+           Field padded_val;
+-          randomizeZZp(rgen_.all(), padded_val, sizeof(Field));
++          randomizeZZp(rgen_.all(), padded_val, FIELDSIZE);
+ 
+           // TP obtains $r = padded_val + delta_x
+           Field r_value = Field(0);
+@@ -767,7 +767,7 @@ void OfflineEvaluator::setWireMasksParty(
+           const auto* ltz_g = static_cast<common::utils::FIn1Gate*>(gate.get());
+           // padded_val
+           Field padded_val;
+-          randomizeZZp(rgen_.all(), padded_val, sizeof(Field));
++          randomizeZZp(rgen_.all(), padded_val, FIELDSIZE);
+ 
+           // TP obtains $r = padded_val + delta_x
+           // TP bit decomposes r and shares it's bits
+@@ -1181,7 +1181,7 @@ void OfflineEvaluator::setWireMasks(
+         offline_bool_comm[b_rand_sh_sec_num + b_rand_sh_num + i] = b_rand_sh_party[i];
+       }
+       auto net_data = BoolRing::pack(offline_bool_comm.data(), bool_comm);
+-      network_->send(nP_, offline_arith_comm.data(), sizeof(Field) * arith_comm);
++      network_->send(nP_, offline_arith_comm.data(), FIELDSIZE * arith_comm);
+       network_->send(nP_, net_data.data(), sizeof(uint8_t) * net_data.size());
+       // network_->send(nP_, offline_bool_comm.data(), sizeof(BoolRing) * bool_comm);
+     }
+@@ -1202,7 +1202,7 @@ void OfflineEvaluator::setWireMasks(
+ 
+ 
+     std::vector<Field> offline_arith_comm(arith_comm);
+-    network_->recv(0, offline_arith_comm.data(), sizeof(Field) * arith_comm);
++    network_->recv(0, offline_arith_comm.data(), FIELDSIZE * arith_comm);
+     size_t nbytes = (bool_comm + 7) / 8;
+     std::vector<uint8_t> net_data(nbytes);
+     network_->recv(0, net_data.data(), nbytes * sizeof(uint8_t));
+diff --git a/src/asterisk/online_evaluator_load_balanced.cpp b/src/asterisk/online_evaluator_load_balanced.cpp
+index 3b0f2a1..ed523df 100644
+--- a/src/asterisk/online_evaluator_load_balanced.cpp
++++ b/src/asterisk/online_evaluator_load_balanced.cpp
+@@ -69,12 +69,12 @@ namespace asterisk
+                                 wires_[g->out] = q_val_[g->out];
+                                 continue;
+                             }
+-                            network_->send(i, &q_val_[g->out], sizeof(Field));
++                            network_->send(i, &q_val_[g->out], FIELDSIZE);
+                         }
+                     }
+                     else
+                     {
+-                        network_->recv(pid, &q_val_[g->out], sizeof(Field));
++                        network_->recv(pid, &q_val_[g->out], FIELDSIZE);
+                         wires_[g->out] = q_val_[g->out];
+                     }
+                 }
+@@ -89,7 +89,7 @@ namespace asterisk
+         {
+             if (g->type == common::utils::GateType::kInp)
+             {
+-                randomizeZZp(rgen_.all(), wires_[g->out], sizeof(Field));
++                randomizeZZp(rgen_.all(), wires_[g->out], FIELDSIZE);
+             }
+         }
+     }
+@@ -698,7 +698,7 @@ namespace asterisk
+                     {
+                         online_comm_to_party[i] = online_comm_to_TP[(pid - 1) * per_party_comm + i];
+                     }
+-                    network_->send(pid, online_comm_to_party.data(), sizeof(Field) * per_party_comm);
++                    network_->send(pid, online_comm_to_party.data(), FIELDSIZE * per_party_comm);
+                 }
+                 else
+                 {
+@@ -707,7 +707,7 @@ namespace asterisk
+                     {
+                         online_comm_to_party[i] = online_comm_to_TP[(pid - 1) * per_party_comm + i];
+                     }
+-                    network_->send(pid, online_comm_to_party.data(), sizeof(Field) * last_party_comm);
++                    network_->send(pid, online_comm_to_party.data(), FIELDSIZE * last_party_comm);
+                 }
+             }
+ 
+@@ -736,7 +736,7 @@ namespace asterisk
+                 if (id_ != nP_)
+                 {
+                     std::vector<Field> online_comm_to_party_recv(per_party_comm);
+-                    network_->recv(pid, online_comm_to_party_recv.data(), sizeof(Field) * per_party_comm);
++                    network_->recv(pid, online_comm_to_party_recv.data(), FIELDSIZE * per_party_comm);
+                     for (size_t i = 0; i < per_party_comm; i++)
+                     {
+                         agg_values_send[i] += online_comm_to_party_recv[i];
+@@ -745,7 +745,7 @@ namespace asterisk
+                 else
+                 {
+                     std::vector<Field> online_comm_to_party_recv(last_party_comm);
+-                    network_->recv(pid, online_comm_to_party_recv.data(), sizeof(Field) * last_party_comm);
++                    network_->recv(pid, online_comm_to_party_recv.data(), FIELDSIZE * last_party_comm);
+                     for (size_t i = 0; i < last_party_comm; i++)
+                     {
+                         agg_values_send_last[i] += online_comm_to_party_recv[i];
+@@ -761,11 +761,11 @@ namespace asterisk
+                 }
+                 if (id_ != nP_)
+                 {
+-                    network_->send(pid, agg_values_send.data(), sizeof(Field) * per_party_comm);
++                    network_->send(pid, agg_values_send.data(), FIELDSIZE * per_party_comm);
+                 }
+                 else
+                 {
+-                    network_->send(pid, agg_values_send_last.data(), sizeof(Field) * last_party_comm);
++                    network_->send(pid, agg_values_send_last.data(), FIELDSIZE * last_party_comm);
+                 }
+             }
+ 
+@@ -793,7 +793,7 @@ namespace asterisk
+                 if (pid != nP_)
+                 {
+                     std::vector<Field> agg_values_recv(per_party_comm);
+-                    network_->recv(pid, agg_values_recv.data(), sizeof(Field) * per_party_comm);
++                    network_->recv(pid, agg_values_recv.data(), FIELDSIZE * per_party_comm);
+                     for (size_t i = 0; i < per_party_comm; i++)
+                     {
+                         agg_values[(pid - 1) * per_party_comm + i] += agg_values_recv[i];
+@@ -802,7 +802,7 @@ namespace asterisk
+                 else
+                 {
+                     std::vector<Field> agg_values_recv(last_party_comm);
+-                    network_->recv(pid, agg_values_recv.data(), sizeof(Field) * last_party_comm);
++                    network_->recv(pid, agg_values_recv.data(), FIELDSIZE * last_party_comm);
+                     for (size_t i = 0; i < last_party_comm; i++)
+                     {
+                         agg_values[(pid - 1) * per_party_comm + i] += agg_values_recv[i];
+@@ -894,25 +894,25 @@ namespace asterisk
+                     case common::utils::GateType::kMul:
+                     {
+                         auto *g = static_cast<common::utils::FIn2Gate *>(gate.get());
+-                        randomizeZZp(prg, rho[g->out], sizeof(Field));
++                        randomizeZZp(prg, rho[g->out], FIELDSIZE);
+                         omega += rho[g->out] * (q_val_[g->out] * key - q_sh_[g->out].tagAt());
+                     }
+                     case common::utils::GateType::kDotprod:
+                     {
+                         auto *g = static_cast<common::utils::SIMDGate *>(gate.get());
+-                        randomizeZZp(prg, rho[g->out], sizeof(Field));
++                        randomizeZZp(prg, rho[g->out], FIELDSIZE);
+                         omega += rho[g->out] * (q_val_[g->out] * key - q_sh_[g->out].tagAt());
+                     }
+                     case common::utils::GateType::kMul3:
+                     {
+                         auto *g = static_cast<common::utils::FIn3Gate *>(gate.get());
+-                        randomizeZZp(prg, rho[g->out], sizeof(Field));
++                        randomizeZZp(prg, rho[g->out], FIELDSIZE);
+                         omega += rho[g->out] * (q_val_[g->out] * key - q_sh_[g->out].tagAt());
+                     }
+                     case common::utils::GateType::kMul4:
+                     {
+                         auto *g = static_cast<common::utils::FIn4Gate *>(gate.get());
+-                        randomizeZZp(prg, rho[g->out], sizeof(Field));
++                        randomizeZZp(prg, rho[g->out], FIELDSIZE);
+                         omega += rho[g->out] * (q_val_[g->out] * key - q_sh_[g->out].tagAt());
+                     }
+                     case common::utils::GateType::kConstAdd:
+@@ -925,7 +925,7 @@ namespace asterisk
+                     }
+                 }
+             }
+-            network_->send(0, &omega, sizeof(Field));
++            network_->send(0, &omega, FIELDSIZE);
+         }
+         else
+         {
+@@ -933,18 +933,18 @@ namespace asterisk
+ 
+             for (int i = 1; i <= nP_; i++)
+             {
+-                network_->recv(i, &omega, sizeof(Field));
++                network_->recv(i, &omega, FIELDSIZE);
+                 res += omega;
+             }
+ 
+             for (int i = 1; i <= nP_; i++)
+             {
+-                network_->send(i, &res, sizeof(Field));
++                network_->send(i, &res, FIELDSIZE);
+             }
+         }
+         if (id_ != 0)
+         {
+-            network_->recv(0, &res, sizeof(Field));
++            network_->recv(0, &res, FIELDSIZE);
+         }
+ 
+         if (res == 0)
+@@ -976,14 +976,14 @@ namespace asterisk
+             }
+             for (int i = 1; i <= nP_; ++i)
+             {
+-                network_->send(i, output_masks.data(), output_masks.size() * sizeof(Field));
++                network_->send(i, output_masks.data(), output_masks.size() * FIELDSIZE);
+             }
+             return outvals;
+         }
+         else
+         {
+             std::vector<Field> output_masks(circ_.outputs.size());
+-            network_->recv(0, output_masks.data(), output_masks.size() * sizeof(Field));
++            network_->recv(0, output_masks.data(), output_masks.size() * FIELDSIZE);
+             for (size_t i = 0; i < circ_.outputs.size(); ++i)
+             {
+                 Field outmask = output_masks[i];
+@@ -999,7 +999,7 @@ namespace asterisk
+         Field reconstructed_value = Field(0);
+         if (id_ != 0)
+         {
+-            network_->send(0, &shares.valueAt(), sizeof(Field));
++            network_->send(0, &shares.valueAt(), FIELDSIZE);
+         }
+         else if (id_ == 0)
+         {
+@@ -1007,7 +1007,7 @@ namespace asterisk
+             for (size_t i = 1; i <= nP_; ++i)
+             {
+                 std::vector<Field> share_val;
+-                network_->recv(i, &share_val[i], sizeof(Field));
++                network_->recv(i, &share_val[i], FIELDSIZE);
+                 reconstructed_value += share_val[i];
+             }
+         }
+diff --git a/src/utils/types.h b/src/utils/types.h
+index 364c4a6..f9db6d6 100644
+--- a/src/utils/types.h
++++ b/src/utils/types.h
+@@ -14,7 +14,7 @@ using Ring = uint64_t;
+ // constexpr uint64_t FRACTION = 16;
+ 
+ // using Field = NTL::ZZ_p;
+-constexpr uint64_t FIELDSIZE = 8; // bytes
++constexpr uint64_t FIELDSIZE = 5; // bytes
+ // using Field = uint64_t;
+ constexpr uint64_t FRACTION = 16;
+ // using Field = int;
+diff --git a/test/assistedMPC_offline.cpp b/test/assistedMPC_offline.cpp
+index bb0d193..6dd5632 100644
+--- a/test/assistedMPC_offline.cpp
++++ b/test/assistedMPC_offline.cpp
+@@ -60,12 +60,12 @@ BOOST_AUTO_TEST_CASE(random_share) {
+         key = 0;
+         keySh[0] = 0;
+         for(int j = 1; j <= nP; j++) {
+-            randomizeZZp(vrgen.pi(j), keySh[j], sizeof(Field));
++            randomizeZZp(vrgen.pi(j), keySh[j], FIELDSIZE);
+             key += keySh[j];
+         }
+       }
+       else {
+-        randomizeZZp(vrgen.p0(), key, sizeof(Field));
++        randomizeZZp(vrgen.p0(), key, FIELDSIZE);
+       }
+       auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
+       if(i == 0) { 
+@@ -74,14 +74,14 @@ BOOST_AUTO_TEST_CASE(random_share) {
+         size_t rand_sh_num = rand_sh[1].size();
+         for(size_t j = 1; j <= nP; j++) {
+             network->send(j, &rand_sh_num, sizeof(size_t));
+-            network->send(j, rand_sh[j-1].data(), sizeof(Field) * rand_sh_num);
++            network->send(j, rand_sh[j-1].data(), FIELDSIZE * rand_sh_num);
+         }
+       }
+       else {
+         size_t rand_sh_num;
+         network->recv(0, &rand_sh_num, sizeof(size_t));
+         std::vector<Field> rand_sh(rand_sh_num);
+-        network->recv(0, rand_sh.data(), sizeof(Field) * rand_sh_num);
++        network->recv(0, rand_sh.data(), FIELDSIZE * rand_sh_num);
+         OfflineEvaluator::randomShare_Party(shares, key, rand_sh, idx);
+       }
+ 
+@@ -119,30 +119,30 @@ BOOST_AUTO_TEST_CASE(random_share_secret) {
+         key = 0;
+         keySh[0] = 0;
+         for(int j = 1; j <= nP; j++) {
+-            randomizeZZp(vrgen.pi(j), keySh[j], sizeof(Field));
++            randomizeZZp(vrgen.pi(j), keySh[j], FIELDSIZE);
+             key += keySh[j];
+         }
+       }
+       else {
+-        randomizeZZp(vrgen.p0(), key, sizeof(Field));
++        randomizeZZp(vrgen.p0(), key, FIELDSIZE);
+       }
+       auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
+       if(i == 0) { 
+         Field secret;
+-        randomizeZZp(vrgen.self(), secret, sizeof(Field));
++        randomizeZZp(vrgen.self(), secret, FIELDSIZE);
+         std::vector<std::vector<Field>> rand_sh_sec(nP + 1);
+         OfflineEvaluator::randomShareSecret_Helper(nP, vrgen, shares, tpshares, secret, key, keySh, rand_sh_sec);
+         size_t rand_sh_sec_num = rand_sh_sec[1].size();
+         for(size_t j = 1; j <= nP; j++) {
+             network->send(j, &rand_sh_sec_num, sizeof(size_t));
+-            network->send(j, rand_sh_sec[j-1].data(), sizeof(Field) * rand_sh_sec_num);
++            network->send(j, rand_sh_sec[j-1].data(), FIELDSIZE * rand_sh_sec_num);
+         }
+       }
+       else {
+         size_t rand_sh_sec_num;
+         network->recv(0, &rand_sh_sec_num, sizeof(size_t));
+         std::vector<Field> rand_sh_sec(rand_sh_sec_num);
+-        network->recv(0, rand_sh_sec.data(), sizeof(Field) * rand_sh_sec_num);
++        network->recv(0, rand_sh_sec.data(), FIELDSIZE * rand_sh_sec_num);
+         OfflineEvaluator::randomShare_Party(shares, key, rand_sh_sec, idx);
+       }
+ 
+@@ -180,12 +180,12 @@ BOOST_AUTO_TEST_CASE(random_share_party) {
+         key = 0;
+         keySh[0] = 0;
+         for(int j = 1; j <= nP; j++) {
+-            randomizeZZp(vrgen.pi(j), keySh[j], sizeof(Field));
++            randomizeZZp(vrgen.pi(j), keySh[j], FIELDSIZE);
+             key += keySh[j];
+         }
+       }
+       else {
+-        randomizeZZp(vrgen.p0(), key, sizeof(Field));
++        randomizeZZp(vrgen.p0(), key, FIELDSIZE);
+       }
+       auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
+       if(i == 0) { 
+@@ -194,7 +194,7 @@ BOOST_AUTO_TEST_CASE(random_share_party) {
+         for(size_t j = 1; j <= nP; j++) {
+           size_t rand_sh_party_num = rand_sh_party[j - 1].size();
+             network->send(j, &rand_sh_party_num, sizeof(size_t));
+-            network->send(j, rand_sh_party[j-1].data(), sizeof(Field) * rand_sh_party_num);
++            network->send(j, rand_sh_party[j-1].data(), FIELDSIZE * rand_sh_party_num);
+         }
+       }
+       else {
+@@ -202,7 +202,7 @@ BOOST_AUTO_TEST_CASE(random_share_party) {
+         size_t rand_sh_party_num;
+         network->recv(0, &rand_sh_party_num, sizeof(size_t));
+         std::vector<Field> rand_sh_party(rand_sh_party_num);
+-        network->recv(0, rand_sh_party.data(), sizeof(Field) * rand_sh_party_num);
++        network->recv(0, rand_sh_party.data(), FIELDSIZE * rand_sh_party_num);
+         if(i == dealer) {
+           Field secret;
+           OfflineEvaluator::randomShareWithParty_Dealer(secret, shares, key, rand_sh_party, idx);
+diff --git a/test/offline.cpp b/test/offline.cpp
+index 332f882..e751db1 100644
+--- a/test/offline.cpp
++++ b/test/offline.cpp
+@@ -62,13 +62,13 @@ BOOST_AUTO_TEST_CASE(random_share) {
+         key = 0;
+         keySh[0] = 0;
+         for(int j = 1; j <= nP; j++) {
+-            randomizeZZp(vrgen.pi(j), keySh[j], sizeof(Field));
++            randomizeZZp(vrgen.pi(j), keySh[j], FIELDSIZE);
+             key += keySh[j];
+         }
+       
+       }
+       else {
+-        randomizeZZp(vrgen.p0(), key, sizeof(Field));
++        randomizeZZp(vrgen.p0(), key, FIELDSIZE);
+       }
+ 
+       auto network = std::make_shared<io::NetIOMP>(i, nP+1, 10000, nullptr, true);
+@@ -78,7 +78,7 @@ BOOST_AUTO_TEST_CASE(random_share) {
+         if(i == 0) {
+           size_t rand_sh_num = rand_sh.size();
+           network->send(nP, &rand_sh_num, sizeof(size_t));
+-          network->send(nP, rand_sh.data(), sizeof(Field) * rand_sh_num);
++          network->send(nP, rand_sh.data(), FIELDSIZE * rand_sh_num);
+         }
+       }
+       else {
+@@ -86,7 +86,7 @@ BOOST_AUTO_TEST_CASE(random_share) {
+         
+         network->recv(0, &rand_sh_num, sizeof(size_t));
+         rand_sh.resize(rand_sh_num);
+-        network->recv(0, rand_sh.data(), sizeof(Field) * rand_sh_num);
++        network->recv(0, rand_sh.data(), FIELDSIZE * rand_sh_num);
+         OfflineEvaluator::randomShare(nP, i, vrgen, *network, 
+                                   shares, tpshares, key, keySh, rand_sh, idx);
+       }

@@ -7,10 +7,28 @@ MULTS = 1000000
 COMPR = 20
 DEPTH = 30
 
-if len(sys.argv) > 1 and sys.argv[1] == "latex":
+if "latex" in sys.argv:
     LATEX = True
 else:
     LATEX = False
+if "r" in sys.argv:
+    PATH_SELECTOR = "_reproduced"
+    print("TheOneProof: using freshly benchmarked data")
+else:
+    PATH_SELECTOR = ""
+    print("TheOneProof: using data from repository")
+if "r-RSS" in sys.argv:
+    RSS_PATH_SELECTOR = "_reproduced"
+    print("RSS zk-FLIOP: using freshly benchmarked data")
+else:
+    RSS_PATH_SELECTOR = ""
+    print("RSS zk-FLIOP: using data from repository")
+if "r-SPDZ2k" in sys.argv:
+    SPDZ2K_PATH_SELECTOR = "_reproduced"
+    print("SPDZ2K+dealer: using freshly benchmarked data")
+else:
+    SPDZ2K_PATH_SELECTOR = ""
+    print("SPDZ2K+dealer: using data from repository")
 
 def aggregate_mpspdz(lines):
     times = []
@@ -55,7 +73,7 @@ def get_row_ours(lan_fliop, wan_fliop, parties):
         return f'{format(off_com_fliop, 2, 5)} +{format(on_com_fliop / parties, 2, 5)} |   {format(rounds_fliop, 0, 2)}   | {format(off_lan_fliop, 2, 4)}+{format(on_lan_fliop, 2, 4)} | {format(off_wan_fliop, 2, 4)}+{format(on_wan_fliop, 2, 5)}'
 
 # Creates a table row for the given benchmark results (compares MP-SPDZ to ours)
-def get_row_difference(lan_fliop, wan_fliop, parties_fliop, off_com_mpspdz, on_com_mpspdz, rounds_mpspdz, off_lan_mpspdz, on_lan_mpspdz, off_wan_mpspdz, on_wan_mpspdz, parties_mp_spdz):
+def get_row_difference(lan_fliop, wan_fliop, parties_fliop, off_com_mpspdz, on_com_mpspdz, rounds_mpspdz, off_lan_mpspdz, on_lan_mpspdz, off_wan_mpspdz, on_wan_mpspdz, parties_mp_spdz, altmode=False):
     off_com_fliop, on_com_fliop, rounds_fliop, off_lan_fliop, on_lan_fliop, off_wan_fliop, on_wan_fliop = aggregate(lan_fliop, wan_fliop)
     # If 2 parties, we do not use p_king, but aggregate assumes each multiplication to use two rounds.
     # Just have depth DEPTH circuits here, so to correct:
@@ -64,7 +82,10 @@ def get_row_difference(lan_fliop, wan_fliop, parties_fliop, off_com_mpspdz, on_c
     if LATEX:
         return f'${format(100*(off_com_fliop+on_com_fliop)/(off_com_mpspdz+on_com_mpspdz*parties_mp_spdz)-100, 1, 3, True)}\\%$ & ${format(100*rounds_fliop/rounds_mpspdz-100, 1, 5, True)}\\%$ & ${format(100*(off_lan_fliop+on_lan_fliop)/(off_lan_mpspdz+on_lan_mpspdz)-100, 1, 5, True)}\\%$ & ${format(100*(off_wan_fliop+on_wan_fliop)/(off_wan_mpspdz+on_wan_mpspdz)-100, 1, 5, True)}\\%$'
     else:
-        return f'   {format(100*(off_com_fliop+on_com_fliop)/(off_com_mpspdz+on_com_mpspdz*parties_mp_spdz)-100, 1, 3, True)}%    | {format(100*rounds_fliop/rounds_mpspdz-100, 1, 5, True)}% |   {format(100*(off_lan_fliop+on_lan_fliop)/(off_lan_mpspdz+on_lan_mpspdz)-100, 1, 5, True)}%  |   {format(100*(off_wan_fliop+on_wan_fliop)/(off_wan_mpspdz+on_wan_mpspdz)-100, 1, 5, True)}%'
+        if altmode:
+            return f'   {format(100*(off_com_fliop+on_com_fliop)/(off_com_mpspdz+on_com_mpspdz*parties_mp_spdz)-100, 1, 3, True)}%*   | {format(100*rounds_fliop/rounds_mpspdz-100, 1, 5, True)}% |min{format(100*(off_lan_fliop+on_lan_fliop)/(off_lan_mpspdz+on_lan_mpspdz)-100, 1, 5, True)}%* |min{format(100*(off_wan_fliop+on_wan_fliop)/(off_wan_mpspdz+on_wan_mpspdz)-100, 1, 5, True)}%*'
+        else:
+            return f'   {format(100*(off_com_fliop+on_com_fliop)/(off_com_mpspdz+on_com_mpspdz*parties_mp_spdz)-100, 1, 3, True)}%    | {format(100*rounds_fliop/rounds_mpspdz-100, 1, 5, True)}% |   {format(100*(off_lan_fliop+on_lan_fliop)/(off_lan_mpspdz+on_lan_mpspdz)-100, 1, 5, True)}%  |   {format(100*(off_wan_fliop+on_wan_fliop)/(off_wan_mpspdz+on_wan_mpspdz)-100, 1, 5, True)}%'
 
 if __name__ == "__main__":
     if not LATEX:
@@ -73,14 +94,14 @@ if __name__ == "__main__":
         NETWORK = "LAN"
         PROTO = "RSS_FLIOP"
         n = 3
-        files = [stack.enter_context(open(f"MPSPDZ_{NETWORK}/log_p{p}_{PROTO}.txt", 'r')).readlines() for p in range(n)]
+        files = [stack.enter_context(open(f"MPSPDZ_{NETWORK}{RSS_PATH_SELECTOR}/log_p{p}_{PROTO}.txt", 'r')).readlines() for p in range(n)]
         comm, rounds, time_LAN = aggregate_mpspdz(files)
         NETWORK = "WAN"
-        files = [stack.enter_context(open(f"MPSPDZ_{NETWORK}/log_p{p}_{PROTO}.txt", 'r')).readlines() for p in range(n)]
+        files = [stack.enter_context(open(f"MPSPDZ_{NETWORK}{RSS_PATH_SELECTOR}/log_p{p}_{PROTO}.txt", 'r')).readlines() for p in range(n)]
         _, _, time_WAN = aggregate_mpspdz(files)
 
-        files_LAN_fliop = [stack.enter_context(open(f"LAN/p{p}/fliop-m{MULTS}-n{2}-c{COMPR}-d{DEPTH}-broadcast-0-t0.txt", 'r')).readlines() for p in range(2 + 1)]
-        files_WAN_fliop = [stack.enter_context(open(f"WAN/p{p}/fliop-m{MULTS}-n{2}-c{COMPR}-d{DEPTH}-broadcast-0-t0.txt", 'r')).readlines() for p in range(2 + 1)]
+        files_LAN_fliop = [stack.enter_context(open(f"LAN{PATH_SELECTOR}/p{p}/fliop-m{MULTS}-n{2}-c{COMPR}-d{DEPTH}-broadcast-0-t0.txt", 'r')).readlines() for p in range(2 + 1)]
+        files_WAN_fliop = [stack.enter_context(open(f"WAN{PATH_SELECTOR}/p{p}/fliop-m{MULTS}-n{2}-c{COMPR}-d{DEPTH}-broadcast-0-t0.txt", 'r')).readlines() for p in range(2 + 1)]
         assert all(len(f) == len(files_LAN_fliop[0]) for f in files_LAN_fliop)
         assert all(len(f) == len(files_WAN_fliop[0]) for f in files_WAN_fliop)
 
@@ -89,33 +110,33 @@ if __name__ == "__main__":
             print(f"our protocol & 2 parties + 1 non-colluding dealer & {get_row_ours(files_LAN_fliop, files_WAN_fliop, 2)} \\\\")
             print(f"decrease/increase & & {get_row_difference(files_LAN_fliop, files_WAN_fliop, 2, 0, comm, rounds, 0, time_LAN, 0, time_WAN, 3)} \\\\ \\midrule")
         else:
-            print(f"   CCS:LEDHHZS24 (3 non-colluding parties)    |  ---  +{format(comm, 2, 5)} |   {rounds}   | --- +{format(time_LAN, 2, 4)} | --- +{format(time_WAN, 2, 4)}")
+            print(f"   CCS:LEDHHZS24 (3 non-colluding parties)    |        {format(comm, 2, 5)} |   {rounds}   |      {format(time_LAN, 2, 4)} |      {format(time_WAN, 2, 5)}")
             print(f"  ours (2 parties + 1 non-colluding dealer)   | {get_row_ours(files_LAN_fliop, files_WAN_fliop, 2)}")
             print(f"              decrease/increase               | {get_row_difference(files_LAN_fliop, files_WAN_fliop, 2, 0, comm, rounds, 0, time_LAN, 0, time_WAN, 3)}")
     with ExitStack() as stack:
         NETWORK = "LAN"
         PROTO = "SPDZ2k"
         n = 3
-        files = [stack.enter_context(open(f"MPSPDZ_{NETWORK}/log_p{p}_{PROTO}.txt", 'r')).readlines() for p in range(n)]
+        files = [stack.enter_context(open(f"MPSPDZ_{NETWORK}{SPDZ2K_PATH_SELECTOR}/log_p{p}_{PROTO}.txt", 'r')).readlines() for p in range(n)]
         comm, rounds, time_LAN = aggregate_mpspdz(files)
         NETWORK = "WAN"
-        files = [stack.enter_context(open(f"MPSPDZ_{NETWORK}/log_p{p}_{PROTO}.txt", 'r')).readlines() for p in range(n)]
+        files = [stack.enter_context(open(f"MPSPDZ_{NETWORK}{SPDZ2K_PATH_SELECTOR}/log_p{p}_{PROTO}.txt", 'r')).readlines() for p in range(n)]
         _, _, time_WAN = aggregate_mpspdz(files)
 
-        files_LAN_fliop = [stack.enter_context(open(f"LAN/p{p}/fliop-m{MULTS}-n{3}-c{COMPR}-d{DEPTH}-pking-1-t0.txt", 'r')).readlines() for p in range(3 + 1)]
-        files_WAN_fliop = [stack.enter_context(open(f"WAN/p{p}/fliop-m{MULTS}-n{3}-c{COMPR}-d{DEPTH}-pking-1-t0.txt", 'r')).readlines() for p in range(3 + 1)]
+        files_LAN_fliop = [stack.enter_context(open(f"LAN{PATH_SELECTOR}/p{p}/fliop-m{MULTS}-n{3}-c{COMPR}-d{DEPTH}-pking-1-t0.txt", 'r')).readlines() for p in range(3 + 1)]
+        files_WAN_fliop = [stack.enter_context(open(f"WAN{PATH_SELECTOR}/p{p}/fliop-m{MULTS}-n{3}-c{COMPR}-d{DEPTH}-pking-1-t0.txt", 'r')).readlines() for p in range(3 + 1)]
         assert all(len(f) == len(files_LAN_fliop[0]) for f in files_LAN_fliop)
         assert all(len(f) == len(files_WAN_fliop[0]) for f in files_WAN_fliop)
 
         comm_offline = MULTS * 4 * 64 / 8 / 1024 / 1024 # larger ring: 64 bits, MACs for a, b, c per triple and c itself (a,b from pre-shared keys)
 
         if LATEX:
-            print(f"SPD$\\Z{{k}}$~\\cite{{SPDZ2K}} & 3 parties + 1 non-colluding dealer$^*$ & ${format(comm_offline, 2, 5)}^*+{format(comm, 2, 5)}$ & ${rounds}$ & $\\text{{?}}  +{format(time_LAN, 2, 4)}$ & $ \\text{{?}}  +{format(time_WAN, 2, 5)}$ \\\\")
+            print(f"SPD$\\Z{{k}}$~\\cite{{SPDZ2K}} & 3 parties + 1 non-colluding dealer$^*$ & ${format(comm_offline, 2, 5)}^*+{format(comm, 2, 5)}$ & ${rounds}$ & $\\text{{?$^*$}}  +{format(time_LAN, 2, 4)}$ & $ \\text{{?$^*$}}  +{format(time_WAN, 2, 5)}$ \\\\")
             print(f"our protocol & 3 parties + 1 non-colluding dealer & {get_row_ours(files_LAN_fliop, files_WAN_fliop, 3)} \\\\")
-            print(f"decrease/increase & & {get_row_difference(files_LAN_fliop, files_WAN_fliop, 3, comm_offline, comm, rounds, 0, time_LAN, 0, time_WAN, 3)} \\\\")
+            print(f"decrease/increase & & {get_row_difference(files_LAN_fliop, files_WAN_fliop, 3, comm_offline, comm, rounds, 0, time_LAN, 0, time_WAN, 3, True)} \\\\")
         else:
-            print(f"SPDZ2k (3 parties + (1 non-colluding dealer)) | {format(comm_offline, 2, 5)}*+{format(comm, 2, 5)} |   {rounds}   |  ?  +{format(time_LAN, 2, 4)} |  ?  +{format(time_WAN, 2, 5)}")
+            print(f"SPDZ2k (3 parties + (1 non-colluding dealer)) | {format(comm_offline, 2, 5)}*+{format(comm, 2, 5)} |   {rounds}   |  ?* +{format(time_LAN, 2, 4)} |  ?* +{format(time_WAN, 2, 5)}")
             print(f"  ours (3 parties + 1 non-colluding dealer)   | {get_row_ours(files_LAN_fliop, files_WAN_fliop, 3)}")
-            print(f"              decrease/increase               | {get_row_difference(files_LAN_fliop, files_WAN_fliop, 3, comm_offline, comm, rounds, 0, time_LAN, 0, time_WAN, 3)}")
+            print(f"              decrease/increase               | {get_row_difference(files_LAN_fliop, files_WAN_fliop, 3, comm_offline, comm, rounds, 0, time_LAN, 0, time_WAN, 3, True)}")
 
 

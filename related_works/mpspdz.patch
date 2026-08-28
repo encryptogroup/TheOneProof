@@ -1,0 +1,56 @@
+diff --git a/CONFIG b/CONFIG
+index b6b69d1..5bc3bc8 100644
+--- a/CONFIG
++++ b/CONFIG
+@@ -12,7 +12,7 @@ PREP_DIR = '-DPREP_DIR="Player-Data/"'
+ SSL_DIR = '-DSSL_DIR="Player-Data/"'
+ 
+ # set for SHE preprocessing (SPDZ and Overdrive)
+-USE_NTL = 1
++USE_NTL = 0
+ 
+ # set for using GF(2^128)
+ # unset for GF(2^40)
+@@ -87,7 +87,7 @@ LDLIBS = -lgmpxx -lgmp -lsodium $(MY_LDLIBS)
+ LDLIBS += $(BREW_LDLIBS)
+ LDLIBS +=  -Wl,-rpath -Wl,$(CURDIR)/local/lib -L$(CURDIR)/local/lib
+ LDLIBS += -lboost_system -lssl -lcrypto
+-LDLIBS += -Wl,-Bstatic -L/usr/local/lib -lntl -Wl,-Bdynamic -lgmp -lm
++LDLIBS += -Wl,-Bstatic -L/usr/local/lib -Wl,-Bdynamic -lgmp -lm
+ 
+ 
+ CFLAGS += -I./local/include
+diff --git a/CONFIG.mine b/CONFIG.mine
+new file mode 100644
+index 0000000..8530169
+--- /dev/null
++++ b/CONFIG.mine
+@@ -0,0 +1,2 @@
++MOD = -DRING_SIZE=32
++MY_CFLAGS = -DINSECURE -DRING_SIZE=32 -DSPDZ2K_DEFAULT_SECURITY=32
+diff --git a/Protocols/TestProtocol.h b/Protocols/TestProtocol.h
+index 03bdf58..f60be44 100644
+--- a/Protocols/TestProtocol.h
++++ b/Protocols/TestProtocol.h
+@@ -25,7 +25,7 @@
+ #include "Tools/my-utils.hpp"
+ 
+ typedef unsigned __int128 uint128_t;
+-typedef uint64_t MulRing;
++typedef uint32_t MulRing;
+ typedef uint128_t VerifyRing;
+ 
+ const int N = 64;
+diff --git a/Protocols/TestProtocol.hpp b/Protocols/TestProtocol.hpp
+index 06694a2..6548948 100644
+--- a/Protocols/TestProtocol.hpp
++++ b/Protocols/TestProtocol.hpp
+@@ -1329,7 +1329,7 @@ void TestProtocol<T>::prepare_mul(const T& x, const T& y, int n) {
+         tmp[i].randomize(shared_prngs[i], n);
+     
+     // add_share = x[0] * y[0] + x[0] * y[1] + x[1] * y[0] + tmp[0] - tmp[1]
+-    auto add_share = (typename T::value_type) share + tmp[0] - tmp[1];
++    auto add_share = (typename T::value_type) ((uint64_t) share) + tmp[0] - tmp[1];
+     add_share.pack(os[0], n);
+ 
+     // x[0] * y[0] + x[0] * y[1] + x[1] * y[0] + tmp[0] - tmp[1]

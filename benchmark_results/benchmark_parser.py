@@ -2,7 +2,7 @@ import statistics
 import json
 import sys
 
-if len(sys.argv) > 1 and sys.argv[1] == "latex":
+if "latex" in sys.argv:
     LATEX = True
 else:
     LATEX = False

@@ -1,10 +1,22 @@
 import glob
 import json
+import sys
 
-lanfiles_fliop = glob.glob('LAN/*/fliop-*.txt')
-lanfiles_semi = glob.glob('LAN/*/semi-*.txt')
-wanfiles_fliop = glob.glob('WAN/*/fliop-*.txt')
-wanfiles_semi = glob.glob('WAN/*/semi-*.txt')
+if "r" in sys.argv:
+    PATH_SELECTOR = "_reproduced"
+    print("using freshly benchmarked data")
+else:
+    PATH_SELECTOR = ""
+    print("using data from repository")
+if "silent" in sys.argv:
+    SILENT = True
+else:
+    SILENT = False
+
+lanfiles_fliop = glob.glob(f'LAN{PATH_SELECTOR}/*/fliop-*.txt')
+lanfiles_semi = glob.glob(f'LAN{PATH_SELECTOR}/*/semi-*.txt')
+wanfiles_fliop = glob.glob(f'WAN{PATH_SELECTOR}/*/fliop-*.txt')
+wanfiles_semi = glob.glob(f'WAN{PATH_SELECTOR}/*/semi-*.txt')
 max_ram = 0
 max_ram_one_mil = 0
 
@@ -41,6 +53,7 @@ for f in lanfiles_fliop + lanfiles_semi + wanfiles_fliop + wanfiles_semi:
                     results[parts[2]]["party"] = val
 
 for bench in results.keys():
-    print(f'{bench:<50}, dealer: {results[bench]["dealer"]:.2f}, party: {results[bench]["party"]:.2f}')
+    if not SILENT:
+        print(f'{bench:<50}, dealer: {results[bench]["dealer"]:.2f} GiB, each party: {results[bench]["party"]:.2f} GiB max')
 
-print(max_ram, max_ram_one_mil)
+print(f'max per party: {max_ram:.2f} GiB, for 10^6 mults: {max_ram_one_mil:.2f} GiB')

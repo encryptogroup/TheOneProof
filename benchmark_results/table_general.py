@@ -9,10 +9,16 @@ DEPTH = [10, 30, 100]
 MULTS = 1000000
 THREADS = [0, 8] # 0 threads means single thread, compiled without OMP
 
-if len(sys.argv) > 1 and sys.argv[1] == "latex":
+if "latex" in sys.argv:
     LATEX = True
 else:
     LATEX = False
+if "r" in sys.argv:
+    PATH_SELECTOR = "_reproduced"
+    print("using freshly benchmarked data")
+else:
+    PATH_SELECTOR = ""
+    print("using data from repository")
 
 # Creates a table row for the given benchmark results (passive baseline)
 def get_row_semi(lan_semi, wan_semi, lan_semi_t8, wan_semi_t8):
@@ -50,10 +56,10 @@ if __name__ == "__main__":
         print("depth |          |   comm.   |  rounds |  time LAN |  time WAN  | t. 8t LAN | t. 8t WAN")
     for depth in DEPTH:
         with ExitStack() as stack:
-            files_LAN_semi = [stack.enter_context(open(f"LAN/p{p}/semi-m{MULTS}-n{PARTIES}-d{depth}-pking-t{0}.txt", 'r')).readlines() for p in range(PARTIES + 1)]
-            files_WAN_semi = [stack.enter_context(open(f"WAN/p{p}/semi-m{MULTS}-n{PARTIES}-d{depth}-pking-t{0}.txt", 'r')).readlines() for p in range(PARTIES + 1)]
-            files_LAN_semi_t8 = [stack.enter_context(open(f"LAN/p{p}/semi-m{MULTS}-n{PARTIES}-d{depth}-pking-t{8}.txt", 'r')).readlines() for p in range(PARTIES + 1)]
-            files_WAN_semi_t8 = [stack.enter_context(open(f"WAN/p{p}/semi-m{MULTS}-n{PARTIES}-d{depth}-pking-t{8}.txt", 'r')).readlines() for p in range(PARTIES + 1)]
+            files_LAN_semi = [stack.enter_context(open(f"LAN{PATH_SELECTOR}/p{p}/semi-m{MULTS}-n{PARTIES}-d{depth}-pking-t{0}.txt", 'r')).readlines() for p in range(PARTIES + 1)]
+            files_WAN_semi = [stack.enter_context(open(f"WAN{PATH_SELECTOR}/p{p}/semi-m{MULTS}-n{PARTIES}-d{depth}-pking-t{0}.txt", 'r')).readlines() for p in range(PARTIES + 1)]
+            files_LAN_semi_t8 = [stack.enter_context(open(f"LAN{PATH_SELECTOR}/p{p}/semi-m{MULTS}-n{PARTIES}-d{depth}-pking-t{8}.txt", 'r')).readlines() for p in range(PARTIES + 1)]
+            files_WAN_semi_t8 = [stack.enter_context(open(f"WAN{PATH_SELECTOR}/p{p}/semi-m{MULTS}-n{PARTIES}-d{depth}-pking-t{8}.txt", 'r')).readlines() for p in range(PARTIES + 1)]
             assert all(len(f) == len(files_LAN_semi[0]) for f in files_LAN_semi)
             assert all(len(f) == len(files_WAN_semi[0]) for f in files_WAN_semi)
             assert all(len(f) == len(files_LAN_semi_t8[0]) for f in files_LAN_semi_t8)
@@ -64,10 +70,10 @@ if __name__ == "__main__":
             else:
                 print(f'  {depth:3} | passive  | {get_row_semi(files_LAN_semi, files_WAN_semi, files_LAN_semi_t8, files_WAN_semi_t8)}')
 
-            files_LAN_fliop = [stack.enter_context(open(f"LAN/p{p}/fliop-m{MULTS}-n{PARTIES}-c{COMPR}-d{depth}-pking-1-t{0}.txt", 'r')).readlines() for p in range(PARTIES + 1)]
-            files_WAN_fliop = [stack.enter_context(open(f"WAN/p{p}/fliop-m{MULTS}-n{PARTIES}-c{COMPR}-d{depth}-pking-1-t{0}.txt", 'r')).readlines() for p in range(PARTIES + 1)]
-            files_LAN_fliop_t8 = [stack.enter_context(open(f"LAN/p{p}/fliop-m{MULTS}-n{PARTIES}-c{COMPR}-d{depth}-pking-1-t{8}.txt", 'r')).readlines() for p in range(PARTIES + 1)]
-            files_WAN_fliop_t8 = [stack.enter_context(open(f"WAN/p{p}/fliop-m{MULTS}-n{PARTIES}-c{COMPR}-d{depth}-pking-1-t{8}.txt", 'r')).readlines() for p in range(PARTIES + 1)]
+            files_LAN_fliop = [stack.enter_context(open(f"LAN{PATH_SELECTOR}/p{p}/fliop-m{MULTS}-n{PARTIES}-c{COMPR}-d{depth}-pking-1-t{0}.txt", 'r')).readlines() for p in range(PARTIES + 1)]
+            files_WAN_fliop = [stack.enter_context(open(f"WAN{PATH_SELECTOR}/p{p}/fliop-m{MULTS}-n{PARTIES}-c{COMPR}-d{depth}-pking-1-t{0}.txt", 'r')).readlines() for p in range(PARTIES + 1)]
+            files_LAN_fliop_t8 = [stack.enter_context(open(f"LAN{PATH_SELECTOR}/p{p}/fliop-m{MULTS}-n{PARTIES}-c{COMPR}-d{depth}-pking-1-t{8}.txt", 'r')).readlines() for p in range(PARTIES + 1)]
+            files_WAN_fliop_t8 = [stack.enter_context(open(f"WAN{PATH_SELECTOR}/p{p}/fliop-m{MULTS}-n{PARTIES}-c{COMPR}-d{depth}-pking-1-t{8}.txt", 'r')).readlines() for p in range(PARTIES + 1)]
             assert all(len(f) == len(files_LAN_fliop[0]) for f in files_LAN_fliop)
             assert all(len(f) == len(files_WAN_fliop[0]) for f in files_WAN_fliop)
             assert all(len(f) == len(files_LAN_fliop_t8[0]) for f in files_LAN_fliop_t8)
