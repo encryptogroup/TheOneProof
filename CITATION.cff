@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+title: >-
+  One Proof to Rule Them All: Practical, Sublinear Verification for Actively Secure MPC on $\mathbb{Z}_{2^k}$ with Dishonest Majority and a Dealer
+message: >-
+  If you use this artifact, please cite the associated ACM CCS 2026 paper.
+  @inproceedings{CCS:BNS26, author = {Andreas Br\"uggemann and Ariel Nof and Thomas Schneider}, title = {{One Proof to Rule Them All: Practical, Sublinear Verification for Actively Secure MPC on $\mathbb{Z}_{2^k}$ with Dishonest Majority and a Dealer}}, booktitle = {33. {ACM} Conference on Computer and Communications Security (CCS'26)}, year = {2026}, month = {November 15-19,}, publisher = {ACM}, note = {Full version: \url{https://ia.cr/2026/1741}. Code: \url{https://encrypto.de/code/TheOneProof}}
+type: software
+authors:
+  - family-names: Brüggemann
+    given-names: Andreas
+    affiliation: 'Technical University of Darmstadt, Germany'
+    email: brueggemann@encrypto.cs.tu-darmstadt.de
+    orcid: 'https://orcid.org/0000-0002-8102-9328'
+  - family-names: Nof
+    given-names: Ariel
+    affiliation: 'Bar-Ilan University, Israel'
+    email: ariel.nof@biu.ac.il
+    orcid: 'https://orcid.org/0009-0007-4852-083X'
+  - family-names: Schneider
+    given-names: Thomas
+    affiliation: 'Technical University of Darmstadt, Germany'
+    email: schneider@encrypto.cs.tu-darmstadt.de
+    orcid: 'https://orcid.org/0000-0001-8090-1316'
+repository-code: 'https://github.com/encryptogroup/TheOneProof'
+abstract: >-
+  This repository contains the implementation of our novel (n+1)-party protocol with active security, utilizing zk-FLIOPS.
+license: MIT
+version: 0.1.1
