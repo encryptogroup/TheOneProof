@@ -92,7 +92,7 @@ void benchmark(const bpo::variables_map& opts) {
         fnet.close();
 
         std::vector<std::string> ipaddress(nP+1);
-        std::array<char*, 5> ip{};
+        std::array<char*, 128> ip{}; // TODO document: maximum of 128 parties supported
         for (size_t i = 0; i < nP+1; ++i) {
             ipaddress[i] = netdata[i].get<std::string>();
             ip[i] = ipaddress[i].data();
