@@ -1,0 +1,35 @@
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/tests)
+
+set(testbin "")
+
+macro(add_test source_name)
+    add_executable(${source_name}_test ${source_name}.cpp)
+    if(VERIFY_MOD_2_256)
+        target_compile_definitions(${source_name}_test PRIVATE VERIFY_MOD_2_256)
+    endif()
+    if(MSVC)
+        target_compile_options(${source_name}_test PRIVATE /W4 /WX ${OpenMP_CXX_FLAGS})
+    else()
+        target_compile_options(${source_name}_test PRIVATE -Wall -Wextra -Wpedantic ${OpenMP_CXX_FLAGS})
+    endif()
+    IF(APPLE)
+    target_link_libraries(${source_name}_test Boost::program_options nlohmann_json::nlohmann_json ring-zkFLIOP GMP EMPTool OpenMP::OpenMP_CXX ${OpenMP_CXX_FLAGS})
+    ELSE()
+    target_link_libraries(${source_name}_test Boost::program_options nlohmann_json::nlohmann_json ring-zkFLIOP Threads::Threads GMP EMPTool OpenMP::OpenMP_CXX ${OpenMP_CXX_FLAGS})
+    ENDIF()
+    list(APPEND testbin ${source_name}_test)
+endmacro()
+
+
+if(VERIFY_MOD_2_256)
+    message("Verification over 256 bit integers active")
+endif()
+
+add_test(fliop)
+add_test(semi)
+add_test(fliop_dotp)
+add_test(semi_dotp)
+add_test(template)
+
+add_custom_target(tests)
+add_dependencies(tests ${testbin})

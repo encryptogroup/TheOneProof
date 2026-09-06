@@ -27,8 +27,6 @@ endif()
 
 add_benchmark(fliop)
 add_benchmark(semi)
-add_benchmark(semi_othercirc)
-add_benchmark(omp_test)
 add_benchmark(fliop_dotp)
 add_benchmark(semi_dotp)
 

@@ -44,3 +44,4 @@ find_package(OpenMP REQUIRED)
 
 add_subdirectory(src)
 add_subdirectory(benchmark)
+add_subdirectory(test)

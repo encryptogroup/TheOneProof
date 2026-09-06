@@ -94,7 +94,7 @@ void benchmark(const bpo::variables_map& opts) {
         fnet.close();
 
         std::vector<std::string> ipaddress(nP+1);
-        std::array<char*, 128> ip{}; // TODO document: maximum of 128 parties supported
+        std::array<char*, 128> ip{}; // maximum of 128 parties supported
         for (size_t i = 0; i < nP+1; ++i) {
             ipaddress[i] = netdata[i].get<std::string>();
             ip[i] = ipaddress[i].data();
@@ -173,7 +173,7 @@ void benchmark(const bpo::variables_map& opts) {
         output phases. This is as our work focuses on making the evaluation efficient, and as
         the numbers of inputs and outputs is highly application-dependent, whereas by benchmarking
         only the evaluation, we get a more general statement, e.g., on the efficiency of running
-        one million multiplications. TODO add pointer paper
+        one million multiplications.  See §5.2.2 in the paper.
 
         Hence, some operations here (for inputs and outputs) are used outside of the code segments
         which are benchmarked.
@@ -255,7 +255,7 @@ void benchmark(const bpo::variables_map& opts) {
 
     std::cout << "--- Statistics ---\n";
     for (const auto& [key, value] : output_data["stats"].items()) {
-        std::cout << key << ": " << value << "\n";
+        std::cout << key << ": " << value << " KB\n";
     }
     std::cout << std::endl;
 
@@ -266,14 +266,14 @@ void benchmark(const bpo::variables_map& opts) {
 
 // clang-format off
 bpo::options_description programOptions() {
-    bpo::options_description desc("Following options are supported by config file too.");
+    bpo::options_description desc("Options");
     desc.add_options()
         ("gates-per-level,g", bpo::value<size_t>()->required(), "Number of gates at each level.")
         ("depth,d", bpo::value<size_t>()->required(), "Multiplicative depth of circuit.")
         ("num-parties,n", bpo::value<size_t>()->required(), "Number of parties.")
         ("pid,p", bpo::value<size_t>()->required(), "Party ID.")
         ("security-param", bpo::value<size_t>()->default_value(128), "Security parameter in bits, code only supports 128!.")
-        ("compression", bpo::value<size_t>()->default_value(2), "Compression factor.")
+        ("compression", bpo::value<size_t>()->default_value(20), "Compression factor.")
         ("threads,t", bpo::value<size_t>()->default_value(4), "Number of threads (recommended 4).")
         ("net-config", bpo::value<std::string>(), "Path to JSON file containing network details of all parties.")
         ("localhost", bpo::bool_switch(), "All parties are on same machine.")
@@ -288,16 +288,11 @@ bpo::options_description programOptions() {
 // clang-format on
 
 int main(int argc, char* argv[]) {
-    //ZZ_p::init(conv<ZZ>("17816577890427308801"));
     auto prog_opts(programOptions());
 
-    bpo::options_description cmdline(
-      "Benchmark online phase for multiplication gates.");
+    bpo::options_description cmdline("Benchmark protocol on a synthetic circuit of the specified dimensions.");
     cmdline.add(prog_opts);
-    cmdline.add_options()(
-      "config,c", bpo::value<std::string>(),
-      "configuration file for easy specification of cmd line arguments")(
-      "help,h", "produce help message");
+    cmdline.add_options()("help,h", "produce help message");
 
     bpo::variables_map opts;
     bpo::store(bpo::command_line_parser(argc, argv).options(cmdline).run(), opts);
@@ -305,18 +300,6 @@ int main(int argc, char* argv[]) {
     if (opts.count("help") != 0) {
         std::cout << cmdline << std::endl;
         return 0;
-    }
-
-    if (opts.count("config") > 0) {
-        std::string cpath(opts["config"].as<std::string>());
-        std::ifstream fin(cpath.c_str());
-
-        if (fin.fail()) {
-            std::cerr << "Could not open configuration file at " << cpath << "\n";
-            return 1;
-        }
-
-        bpo::store(bpo::parse_config_file(fin, prog_opts), opts);
     }
 
     try {

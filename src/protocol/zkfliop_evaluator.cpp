@@ -268,8 +268,6 @@ namespace zkfliop
 
         // Now, run the setup for the verification protocol.
         setup_verify();
-        // TODO test that send does not block until received!!!
-        // TODO didn't we already do that??
     }
 
     void Evaluator::setInputs(const std::unordered_map<common::utils::wire_t, int> &input_mapping, const std::unordered_map<common::utils::wire_t, Ring> &inputs)
@@ -1080,7 +1078,7 @@ namespace zkfliop
 
         size_t m = circ_.count[common::utils::GateType::kMul];
 
-        // ### Pi_verify step 1: sample r_i^k from new PRG seed. ###
+        // ### Pi_verify step 1: sample r_i^l from new PRG seed. ###
         // Done by Dealer + parties.
         // Formatting as vectors r_i, each containing all SSEC many bits r_i^j in one uint64_t
         // (wasting the remaining bits, but they do not cost additional communication)
@@ -1090,7 +1088,7 @@ namespace zkfliop
         r_bits.resize(m);
         prg.random_data(r_bits.data(), m * sizeof(uint64_t));
 
-        // ### Pi_verify step 2: Compute all SSEC Lambda^k terms ###
+        // ### Pi_verify step 2: Compute all SSEC Lambda^l terms ###
         // Done by parties only.
         std::vector<Ring> Lambdas;
         if (id_ != 0) { // Parties only
@@ -1105,16 +1103,16 @@ namespace zkfliop
                         if (gate->type == common::utils::GateType::kMul) {
                             auto *g = static_cast<common::utils::FIn2Gate *>(gate.get());
 
-                            // add r_i^k * (m_x_i * m_y_i - m_z_i) to Lambda^k
-                            // strategy: compute m_x_i * m_y_i - m_z_i (same for all k), then for each
-                            // Lambda^k, add only if r_i^k = 1/true
+                            // add r_i^l * (m_x_i * m_y_i - m_z_i) to Lambda^l
+                            // strategy: compute m_x_i * m_y_i - m_z_i (same for all l), then for each
+                            // Lambda^l, add only if r_i^l = 1/true
                             Ring inner = wires_[g->in1].getM() * wires_[g->in2].getM() - wires_[g->out].getM();
-                            for (size_t k = 0; k < SSEC; k++) {
-                                // r_i^k: (r_bits[offset + i] >> k) & 0x00000001, as we consider numbers
+                            for (size_t l = 0; l < SSEC; l++) {
+                                // r_i^l: (r_bits[offset + i] >> l) & 0x00000001, as we consider numbers
                                 // r_i (using offset + i as index here due to the parallelization),
-                                // and bit at position k corresponds to r_i^k.
-                                if ((r_bits[offset + i] >> k) & 0x00000001) {
-                                    Lambdas[k] += inner;
+                                // and bit at position k corresponds to r_i^l.
+                                if ((r_bits[offset + i] >> l) & 0x00000001) {
+                                    Lambdas[l] += inner;
                                 }
                             }
                         } else {
@@ -1129,22 +1127,22 @@ namespace zkfliop
         // ### Pi_verify steps 3, 4, 5 ###
         // Done by Dealer + parties.
         /*
-        Step 3 builds the vectors a'^k and b' which are then immediately lifted in steps 4 and 5.
+        Step 3 builds the vectors a'^l and b' which are then immediately lifted in steps 4 and 5.
         We merge that by immediately lifting when building the vectors.
 
         We do the following code optimization:
-        Let a' be what remains of the vectors a'^k when NOT having the factor r_i^k in each entry.
+        Let a' be what remains of the vectors a'^l when NOT having the factor r_i^l in each entry.
         Then, we note that
-        a'^k = (r_1^k, r_1^k, r_1^k, r_2^k, r_2^k, r_2^k, ..., r_m^k, r_m^k, r_m^k) HADAMARD a',
+        a'^l = (r_1^l, r_1^l, r_1^l, r_2^l, r_2^l, r_2^l, ..., r_m^l, r_m^l, r_m^l) HADAMARD a',
         where HADAMARD stands for the hadamard product, i.e., the component-wise multiplication.
-        Recall that a^k = lift(a'^k). Yet, it also holds that
-        a^k = (r_1^k, r_1^k, r_1^k, r_2^k, r_2^k, r_2^k, ..., r_m^k, r_m^k, r_m^k) HADAMARD a
-        where a = lift(a'), because the r_i^k all are in {0,1}.
-        So, instead of computing SSEC many a^k, we compute a single a and later in steps 6 and 10
-        of the protocol that use a^k simply replace that by
-        (r_1^k, r_1^k, r_1^k, r_2^k, r_2^k, r_2^k, ..., r_m^k, r_m^k, r_m^k) HADAMARD a.
+        Recall that a^l = lift(a'^l). Yet, it also holds that
+        a^l = (r_1^l, r_1^l, r_1^l, r_2^l, r_2^l, r_2^l, ..., r_m^l, r_m^l, r_m^l) HADAMARD a
+        where a = lift(a'), because the r_i^l all are in {0,1}.
+        So, instead of computing SSEC many a^l, we compute a single a and later in steps 6 and 10
+        of the protocol that use a^l simply replace that by
+        (r_1^l, r_1^l, r_1^l, r_2^l, r_2^l, r_2^l, ..., r_m^l, r_m^l, r_m^l) HADAMARD a.
         Why? Besides saving memory, in steps 6 and 10, this will make some optimizations possible,
-        seeing that the different a^k are structurally close to each other. Details explained later
+        seeing that the different a^l are structurally close to each other. Details explained later
         for steps 6 and 10.
         */
         std::vector<LargeRing> a;  // 1 a vector (see above)
@@ -1198,7 +1196,7 @@ namespace zkfliop
                 for (auto &gate : layer) {
                     if (gate->type == common::utils::GateType::kMul) {
                         auto *g = static_cast<common::utils::FIn2Gate *>(gate.get());
-                        // Recall above optimization: We have a single a which omits all the r_i^k for now.
+                        // Recall above optimization: We have a single a which omits all the r_i^l for now.
                         // Also, code below implicitly casts to LargeRing, doing the lifting.
                         a.push_back(wires_[g->in1].getM());
                         a.push_back(wires_[g->in2].getM());
@@ -1212,16 +1210,16 @@ namespace zkfliop
         // Done by parties
         // Each party locally computes SSEC many dot products
         // From prior optimization changes:
-        // a^k * b = ((r_1^k, r_1^k, r_1^k, r_2^k, r_2^k, r_2^k, ..., r_m^k, r_m^k, r_m^k) HADAMARD a) * b
+        // a^l * b = ((r_1^l, r_1^l, r_1^l, r_2^l, r_2^l, r_2^l, ..., r_m^l, r_m^l, r_m^l) HADAMARD a) * b
         /*
         Regarding our optimization, now observe the following:
-        a^k * b = ((r_1^k, r_1^k, r_1^k, r_2^k, r_2^k, r_2^k, ...) HADAMARD (a_1, a_2, a_3, a_4, a_5, a_6, ...))
+        a^l * b = ((r_1^l, r_1^l, r_1^l, r_2^l, r_2^l, r_2^l, ...) HADAMARD (a_1, a_2, a_3, a_4, a_5, a_6, ...))
         * (b_1, b_2, b_3, b_4, b_5, b_6, ...)
-        = (r_1^k a_1, r_1^k a_2, r_1^k a_3, r_2^k a_4, r_2^k a_5, r_2^k a_6, ...) * (b_1, b_2, b_3, b_4, b_5, b_6, ...)
-        = r_1^k a_1 b_1 + r_1^k a_2 b_2 + r_1^k a_3 b_3 + r_2^k a_4 b_4 + r_2^k a_5 b_5 + r_2^k a_6 b_6 + ...
-        = r_1^k (a_1 b_1 + a_2 b_2 + a_3 b_3) + r_2^k (a_4 b_4 + a_5 b_5 + a_6 b_6) + ...
+        = (r_1^l a_1, r_1^l a_2, r_1^l a_3, r_2^l a_4, r_2^l a_5, r_2^l a_6, ...) * (b_1, b_2, b_3, b_4, b_5, b_6, ...)
+        = r_1^l a_1 b_1 + r_1^l a_2 b_2 + r_1^l a_3 b_3 + r_2^l a_4 b_4 + r_2^l a_5 b_5 + r_2^l a_6 b_6 + ...
+        = r_1^l (a_1 b_1 + a_2 b_2 + a_3 b_3) + r_2^l (a_4 b_4 + a_5 b_5 + a_6 b_6) + ...
         Hence, we will first compute the "sub-dot-products" (a_1 b_1 + a_2 b_2 + a_3 b_3) etc.,
-        and then add these to each c_j^k = a^k * b if the bit r_1^k etc. is to 1.
+        and then add these to each c_j^l = a^l * b if the bit r_1^l etc. is to 1.
         Using that, we drastically reduce the number of arithmetic operations, as they do not need
         to be repeated SSEC many times.
         */
@@ -1235,10 +1233,10 @@ namespace zkfliop
                 for (size_t j = 0; j < 3; j++) {
                     pre_product += a[3 * i + j] * b[3 * i + j];
                 }
-                for (size_t k = 0; k < SSEC; k++) {
-                    bool r_bit = (pre_r_bit >> k) & 0x00000001; // extract r_i^k
-                    local_cs[k] += r_bit ? pre_product : 0; // only add pre_product if bit set to 1
-                    // if (id_ == 1) local_cs[k] += k; // Test error
+                for (size_t l = 0; l < SSEC; l++) {
+                    bool r_bit = (pre_r_bit >> l) & 0x00000001; // extract r_i^l
+                    local_cs[l] += r_bit ? pre_product : 0; // only add pre_product if bit set to 1
+                    // if (id_ == 1) local_cs[l] += l; // Test error
                 }
             }
         }
@@ -1257,10 +1255,10 @@ namespace zkfliop
         if (id_ != 0) // Dealer does not know m values
             gamma_ms.reserve(SSEC);
         gamma_ls.reserve(SSEC);
-        for (size_t k = 0; k < SSEC; k++) {
-            gamma_ls.push_back((Ring) c_ls[k]);
+        for (size_t l = 0; l < SSEC; l++) {
+            gamma_ls.push_back((Ring) c_ls[l]);
             if (id_ != 0)
-                gamma_ms.push_back((Ring) c_ms[k]);
+                gamma_ms.push_back((Ring) c_ms[l]);
         }
 
         // ### Pi_verify step 9 ###
@@ -1273,7 +1271,7 @@ namespace zkfliop
 
         // ### Pi_verify step 10 ###
         // Done by parties
-        // set x = sum r_merge^k a^k and y = b
+        // set x = sum r_merge^l a^l and y = b
         // actually, we just modify a in-place and keep b unchanged, no need to create new vectors here
         /*
         Call r_merge rm here for now.
@@ -1293,9 +1291,9 @@ namespace zkfliop
             for (size_t i = 0; i < m; i++) {
                 uint64_t pre_r_bit = r_bits[i]; // LSB is r_i^1, then comes r_i^2, etc.
                 LargeRing factor = 0;
-                for (size_t k = 0; k < SSEC; k++) {
-                    if ((pre_r_bit >> k) & 0x00000001) // extract r_i^k, add rm^k if true
-                        factor += r_merge[k];
+                for (size_t l = 0; l < SSEC; l++) {
+                    if ((pre_r_bit >> l) & 0x00000001) // extract r_i^l, add rm^l if true
+                        factor += r_merge[l];
                 }
                 for (size_t j = 0; j < 3; j++) {
                     a[3 * i + j] *= factor;
@@ -1305,9 +1303,9 @@ namespace zkfliop
 
         // ### Pi_verify step 11 ###
         // Done by parties
-        // set [z] = sum r_merge^k [c^k]
+        // set [z] = sum r_merge^l [c^l]
         /*
-        Note that this means m_z = sum r_merge^k m_c^k and lambda_z = sum r_merge^k lambda_c^k.
+        Note that this means m_z = sum r_merge^l m_c^l and lambda_z = sum r_merge^l lambda_c^l.
         which again means m_z = r_merge * m_c and lambda_z = r_merge * lambda_c expressed as dot products.
         */
         LargeRing z_m;
@@ -1348,8 +1346,8 @@ namespace zkfliop
             // ### Pi_reduceDeg step 2 ###
             // Done by parties
             // Each party P_i locally computes compression_factor_^2-1 many dot products
-            // z_i^{j,k} = x^j * y_i^k for all j, k in 1,...,compression_factor_ except j=k=1.
-            // Here, this is x[j*d:(j+1)*d] * y[k*d:(k+1)*d] as in the code, we instead count j,k in
+            // z_i^{j,l} = x^j * y_i^l for all j, l in 1,...,compression_factor_ except j=l=1.
+            // Here, this is x[j*d:(j+1)*d] * y[l*d:(l+1)*d] as in the code, we instead count j,l in
             // 0,...,compression_factor_-1.
             // Crucial to parallelize this, this is the main computational bottleneck.
             std::vector<LargeRing> local_zs; // to be filled with z_i^{0,1}, z_i^{0,2},...,z_i^{1,0}, z_i^{1,1}, z_i^{1,2},... (with 0-indexing)
@@ -1407,27 +1405,27 @@ namespace zkfliop
             // Done by Dealer + parties
             // compute new x, y, z as:
             /*
-            sum alpha^k x^k = sum alpha^k x[k*d,(k+1)*d]
-            sum beta^k y^k = sum beta^k y[k*d,(k+1)*d]
-            sum sum alpha^j beta^k z^{j,k}
+            sum alpha^l x^l = sum alpha^l x[l*d,(l+1)*d]
+            sum beta^l y^l = sum beta^l y[l*d,(l+1)*d]
+            sum sum alpha^j beta^l z^{j,l}
             */
             std::vector<LargeRing> x_new, y_new;
             if (id_ != 0) { // Dealer does not have x
                 x_new.resize(d);
-                for (size_t k = 0; k < compression_factor_; k++) {
-                    LargeRing alpha = alpha_reduce[k];
+                for (size_t l = 0; l < compression_factor_; l++) {
+                    LargeRing alpha = alpha_reduce[l];
                     #pragma omp parallel for
                     for (size_t i = 0; i < d; i++) {
-                        x_new[i] += alpha * x[k * d + i];
+                        x_new[i] += alpha * x[l * d + i];
                     }
                 }
             }
             y_new.resize(d);
-            for (size_t k = 0; k < compression_factor_; k++) {
-                LargeRing beta = beta_reduce[k];
+            for (size_t l = 0; l < compression_factor_; l++) {
+                LargeRing beta = beta_reduce[l];
                 #pragma omp parallel for
                 for (size_t i = 0; i < d; i++) {
-                    y_new[i] += beta * y[k * d + i];
+                    y_new[i] += beta * y[l * d + i];
                 }
             }
             LargeRing z_new_m;
@@ -1487,9 +1485,9 @@ namespace zkfliop
         // ### Pi_checkTriple step 2 ###
         // Done by parties
         // Each party P_i locally computes d^2+d-1 many products
-        // z_i^{j,k} = x^j * y_i^k for all j=1,...,d and k=0,...,d except j=k=1.
-        // Here, this is x[j] * y[k] as in the code, we instead count j,k in 0,...,compression_factor_-1,
-        // and instead of k=0 in the paper, we have the appended entry from step 1 at k=d
+        // z_i^{j,l} = x^j * y_i^l for all j=1,...,d and l=0,...,d except j=l=1.
+        // Here, this is x[j] * y[l] as in the code, we instead count j,l in 0,...,compression_factor_-1,
+        // and instead of l=0 in the paper, we have the appended entry from step 1 at l=d
         std::vector<LargeRing> local_zs; // to be filled with z_i^{0,1}, z_i^{0,2},...,z_i^{0,d},
                                          // z_i^{1,0}, z_i^{1,1}, z_i^{1,2},...,z_i^{1,d}, ... (with 0-indexing)
         if (id_ != 0) {
@@ -1559,22 +1557,22 @@ namespace zkfliop
         // Done by Dealer + parties
         // compute scalar x', y', z' as:
         /*
-        sum alpha^k x_k
-        sum beta^k y_k
-        sum sum alpha^j beta^k z^{j,k}
+        sum alpha^l x_l
+        sum beta^l y_l
+        sum sum alpha^j beta^l z^{j,l}
         */
         LargeRing x_scalar, y_scalar;
         if (id_ != 0) { // Dealer does not have x
             x_scalar = 0;
             #pragma omp parallel for reduction(+ : x_scalar)
-            for (size_t k = 0; k < d; k++) {
-                x_scalar += alpha_reduce[k] * x[k];
+            for (size_t l = 0; l < d; l++) {
+                x_scalar += alpha_reduce[l] * x[l];
             }
         }
         y_scalar = 0;
         #pragma omp parallel for reduction(+ : y_scalar)
-        for (size_t k = 0; k < d; k++) {
-            y_scalar += beta_reduce[k] * y[k];
+        for (size_t l = 0; l < d; l++) {
+            y_scalar += beta_reduce[l] * y[l];
         }
         // this sum also includes beta^d * y_d, but we set beta^d=1 above, so:
         y_scalar += y[d];
@@ -1667,9 +1665,9 @@ namespace zkfliop
         // Done by Dealer and parties
         // Compute SSEC many v = Lambda + Gamma, open them, check if results are 0
         /*
-        Each v^k has an m and a lambda (l) part.
-        The m part is the m park of Gamma^k plus Lambda^k, the latter known by all online parties.
-        The l part is the l part of Gamma^k.
+        Each v^l has an m and a lambda (l) part.
+        The m part is the m park of Gamma^l plus Lambda^l, the latter known by all online parties.
+        The l part is the l part of Gamma^l.
         We need to rerandomize the l part, open it, add it to the m part, and check if that is 0.
         */
         // First, rerandomize the gamma_ls entries
@@ -1678,22 +1676,22 @@ namespace zkfliop
             // random shares with P_2, ..., P_n, and then compute a matching share for P_1 so that
             // everything sums up to zero.
             randomizers_ring.resize(SSEC);
-            for (size_t k = 0; k < SSEC; k++) {
+            for (size_t l = 0; l < SSEC; l++) {
                 Ring sum_other_shares = 0;
                 for (size_t i = 2; i <= nP_; i++)
                     sum_other_shares += getRandomElem(rgen_.as_D_with_i(i));
-                randomizers_ring[k] = 0 - sum_other_shares;
+                randomizers_ring[l] = 0 - sum_other_shares;
                 // No need for the dealer to add the randomizers to the full gamma_ls[k]s
                 // that it holds, as the full randomizers are zero.
             }
         } else if (id_ == 1) {
             // P_1 reads and uses randomizers that it received from Dealer in setup
-            for (size_t k = 0; k < SSEC; k++)
-                gamma_ls[k] += randomizers_ring[k];
+            for (size_t l = 0; l < SSEC; l++)
+                gamma_ls[l] += randomizers_ring[l];
         } else {
             // Other parties just add their non-interactively sampled shares
-            for (size_t k = 0; k < SSEC; k++)
-                gamma_ls[k] += getRandomElem(rgen_.me_and_D());
+            for (size_t l = 0; l < SSEC; l++)
+                gamma_ls[l] += getRandomElem(rgen_.me_and_D());
         }
         /*
         Again (as in Pi_checkTriple step 7), as per §4.2.5, we also immediately run the verification for
@@ -1701,16 +1699,16 @@ namespace zkfliop
         has not been used, so we do not need a pairwise consistency check here. We can let the parties
         exchange in parallel if something in Pi_rec^active.verify went wrong and if the result is
         unequal zero. That is because if the verify rejects, this is because the adversary has sent
-        incorrect shares to some honest parties which then reconstruct incorrect v^k. The error goes
-        into this part additively, so the adversary knows the incorrect v^k that these honest parties
-        have, while also learning the correct values itself. From that, it already knows if v^k!=0
+        incorrect shares to some honest parties which then reconstruct incorrect v^l. The error goes
+        into this part additively, so the adversary knows the incorrect v^l that these honest parties
+        have, while also learning the correct values itself. From that, it already knows if v^l!=0
         for the honest parties, even if these detect an issue from the verify.
         */
         openAdditive(gamma_ls, true, pking_verify_ >= 1, false);
         if (id_ != 0) { // Besides the verification, the Dealer does not provide anything to the remaining check.
             bool accept = true;
-            for (size_t k = 0; k < SSEC; k++) {
-                accept &= (Lambdas[k] + gamma_ms[k] + gamma_ls[k] == 0);
+            for (size_t l = 0; l < SSEC; l++) {
+                accept &= (Lambdas[l] + gamma_ms[l] + gamma_ls[l] == 0);
             }
             checkForDoubleAccept(!opening_commit_mismatch_, accept, "ABORT: openAddShare.verify failed, inconsistent hash values", "ABORT: Final top-level verification check failed");
         }
