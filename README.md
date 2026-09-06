@@ -172,7 +172,9 @@ Each individual experiment is run 10 times and we average over the resulting val
 Note that these 10 iterations are split into 5 runs of the respecive benchmark program, which does 2
 iterations on each run.
 
-> [!NOTE] Optional benchmarks for related work.
+> [!NOTE]
+> Optional benchmarks for related work.
+> 
 > In our paper, we empirically compare to three related works:
 > [Asterisk](https://ia.cr/2023/1098), [RSS with zk-FLIOPs over rings](https://ia.cr/2024/700), and [SPDZ2k](https://ia.cr/2018/482).
 > For our comparisons, we utilize existing codebases:
