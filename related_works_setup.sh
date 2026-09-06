@@ -4,6 +4,10 @@ set -e
 echo "Preparing related works ... ($(date +%H:%M:%S), container timezone might differ from host timezone)"
 
 cd related_works
+# clear any potentially prior installations:
+rm -rf Asterisk
+rm -rf malicious_3pc_arithmetic
+
 git clone https://github.com/cris-coders-iisc/Asterisk.git
 git clone https://github.com/AntCPLab/malicious_3pc_arithmetic.git
 
