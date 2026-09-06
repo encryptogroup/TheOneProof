@@ -1,7 +1,7 @@
 # One Proof to Rule Them All: Practical, Sublinear Verification for Actively Secure MPC on Z2k with Dishonest Majority and a Dealer
 
 This repository contains the implementation of our novel (n+1)-party protocol with active security, utilizing one single distributed zero-knowledge proof,
-as introduced by our paper at CCS 2026 (full version on [eprint](https://ia.cr/2026/1741) and [inside this repository](paper_full_version.pdf)).
+as introduced by our paper at CCS 2026 (full version on [eprint](https://ia.cr/2026/1741)).
 In more detail, we provide MPC implementations for the following:
 * Passively secure MPC with n parties (dishonest majority) and a trusted dealer, designed for computation on Z2k and function-dependent preprocessing.
 * Actively secure MPC, using a distributed zero-knowledge proof on top of the passively secure protocol to protect against cheaters.
@@ -12,7 +12,7 @@ Parts of the code are based on [Asterisk](https://github.com/cris-coders-iisc/As
 > [!WARNING]
 > This code is a research prototype implementation and, hence, should not be used in production.
 
-> Check out our paper (full version on [eprint](https://ia.cr/2026/1741) and [inside this repository](paper_full_version.pdf)), accepted at CCS'26!
+> Check out our paper (full version on [eprint](https://ia.cr/2026/1741)), accepted at CCS'26!
 >
 > When using this code, please cite our paper:
 > ```bibtex
@@ -30,15 +30,15 @@ Parts of the code are based on [Asterisk](https://github.com/cris-coders-iisc/As
 
 ## :books: Table of Contents
 
-* [:clipboard: Requirements](#requirements): Hard- and software requirements to run this artifact's code.
-* [Quickstart Guide](#quickstart-guide): Quick walkthrough, demonstrating how to run the protocols.
-* [Reproducing our Benchmark Results](#reproducing-our-benchmark-results): Guide to reproduce the paper's results.
-* [:seedling' Environment](#environment): Setting up the environment to compile and run the protocols, either using Docker or standalone.
-* [:gear: Compiling the Protocols](#compiling-the-protocols): Instructions on compiling the code and available options.
-* [:play_or_pause_button: Running the Protocols](#running-the-protocols): Guide on running the protocols as benchmarks or tests.
-* [:chart_with_upwards_trend: Processing Benchmark Data](#parsing-and-processing-benchmark-data): Processing of raw benchmark outputs to obtain the tables and plots from the paper.
-* [:page_facing_up: Repository Structure](#repository-structure): Contents and structure of this repository.
-* [:building_construction: Extending the Code](#extending-the-code): Pointers on extending the code.
+* [:clipboard: Requirements](#clipboard-requirements): Hard- and software requirements to run this artifact's code.
+* [:fast_forward: Quickstart Guide](#fast_forward-quickstart-guide): Quick walkthrough, demonstrating how to run the protocols.
+* [:bar_chart: Reproducing our Benchmark Results](#bar_chart-reproducing-our-benchmark-results): Guide to reproduce the paper's results.
+* [:seedling: Environment](#seedling-environment): Setting up the environment to compile and run the protocols, either using Docker or standalone.
+* [:gear: Compiling the Protocols](#gear-compiling-the-protocols): Instructions on compiling the code and available options.
+* [:play_or_pause_button: Running the Protocols](#play_or_pause_button-running-the-protocols): Guide on running the protocols as benchmarks or tests.
+* [:chart_with_upwards_trend: Processing Benchmark Data](#chart_with_upwards_trend-processing-benchmark-data): Processing of raw benchmark outputs to obtain the tables and plots from the paper.
+* [:page_facing_up: Repository Structure](#page_facing_up-repository-structure): Contents and structure of this repository.
+* [:building_construction: Extending the Code](#building_construction-extending-the-code): Pointers on extending the code.
 
 
 ## :clipboard: Requirements
@@ -63,7 +63,7 @@ Software requirements are as follows:
 ## :fast_forward: Quickstart Guide
 
 This guide is intended to demonstrate how to run our MPC protocols manually inside a Docker container.
-If you want to reproduce our benchmark results, please instead continue [here](#reproducing-our-benchmark-results).
+If you want to reproduce our benchmark results, please instead continue [here](#bar_chart-reproducing-our-benchmark-results).
 
 ```sh
 # First, clone/download/extract the repository and navigate into its main directory
@@ -376,7 +376,7 @@ Also, platforms support is quite limited, as the underlying Clang's ```BitInt```
 
 ### Benchmarks
 
-> For reproducing all benchmarks as provided in the paper, see [here](#reproducing-our-benchmark-results) for instructions
+> For reproducing all benchmarks as provided in the paper, see [here](#bar_chart-reproducing-our-benchmark-results) for instructions
 > and scripts to automate the benchmarks. 
 
 The compiled benchmark binaries are located in the ```build/benchmarks``` directory.
@@ -452,7 +452,7 @@ Different iterations sample different random input values to the circuit.
 ## :chart_with_upwards_trend: Processing Benchmark Data
 
 To process benchmark outputs, we provide multiple scripts inside [benchmark_results](benchmark_results/).
-These can be used to parse freshly reproduced raw benchmark data (see [here](#reproducing-our-benchmark-results) on how to generate it),
+These can be used to parse freshly reproduced raw benchmark data (see [here](#bar_chart-reproducing-our-benchmark-results) on how to generate it),
 or parse the raw benchmark output that we have obtained in our paper's benchmarks.
 
 We provide the following scripts to reproduce the tables from the paper.
@@ -482,7 +482,7 @@ and executing the protocols. Further information can be found [here](#benchmarks
 
 ### benchmark_results
 
-Directories for the raw benchmark data utilized in our paper, next to directories with ```_reproduced```-suffix where [reproducing the benchmarks](#reproducing-our-benchmark-results) will write new raw data to.
+Directories for the raw benchmark data utilized in our paper, next to directories with ```_reproduced```-suffix where [reproducing the benchmarks](#bar_chart-reproducing-our-benchmark-results) will write new raw data to.
 Also contains scripts to parse and format the raw data, as documented [here](#processing-benchmark-data).
 
 ### related_works
@@ -494,7 +494,7 @@ Finally, it contains a benchmark circuit for MP-SPDZ.
 ### scripts
 
 Scripts and other useful configs to run benchmarks:
-* ```benchmark_*.sh```: Routines to benchmark protocols after network emulation has been set up. We recommend to simply follow the steps [here](#reproducing-our-benchmark-results) instead of using the scripts manually.
+* ```benchmark_*.sh```: Routines to benchmark protocols after network emulation has been set up. We recommend to simply follow the steps [here](#bar_chart-reproducing-our-benchmark-results) instead of using the scripts manually.
 * ```net_config.*```: Network configurations, containing the IP addresses in our emulated network, to be used as input config file to the benchmarks.
 * ```network.py```: Network emulation script, see [the documentation here](#local-network-emulation).
 
@@ -521,9 +521,9 @@ Further information can be found [here](#tests).
 * ```Dockerfile```: Dockerfile to run the code within a Docker container. Automatically sets up all required dependencies.
 * ```parse_reproduced.sh```: Parses and formats all benchmark data after it has been reproduced. See [here](#processing-benchmark-data).
 * ```quicktest.sh```: Runs a quick test to check if compilation was successful.
-* ```related_works_setup.sh```: Downloads and installs the related works to compare to, so that we can reproduce their benchmarks. See [here](#reproducing-our-benchmark-results).
-* ```related_works_reproduce.sh```: Reproduces benchmarks for related works. See [here](#reproducing-our-benchmark-results).
-* ```reproduce.sh```: Reproduces benchmarks for our protocol. See [here](#reproducing-our-benchmark-results).
+* ```related_works_setup.sh```: Downloads and installs the related works to compare to, so that we can reproduce their benchmarks. See [here](#bar_chart-reproducing-our-benchmark-results).
+* ```related_works_reproduce.sh```: Reproduces benchmarks for related works. See [here](#bar_chart-reproducing-our-benchmark-results).
+* ```reproduce.sh```: Reproduces benchmarks for our protocol. See [here](#bar_chart-reproducing-our-benchmark-results).
 * ```test.sh```: Runs tests for our protocols. See [here](#tests).
 
 
