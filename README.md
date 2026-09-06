@@ -43,8 +43,10 @@ Parts of the code are based on [Asterisk](https://github.com/cris-coders-iisc/As
 
 ## :clipboard: Requirements
 
-This code has been designed primarily for Linux on an x86_64 architecture.
-It has also been successfully tested on MacOS with Apple Silicon, but lacks 256-bit-verification support on that platform.
+This code has been designed and tested for Linux on an x86_64 architecture.
+(It has also been successfully compiled and run on MacOS with Apple Silicon, but this platform does
+not support the scripts to locally benchmark and reproduce all experiments, and it requires
+to manually set up a proper clang toolchain as Apple's clang does not support OpenMP.)
 We have designed our benchmarks so that they can easily be run on a single device, locally emulating a network, which is the
 setting that we focus on here. 
 
