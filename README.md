@@ -53,7 +53,7 @@ setting that we focus on here.
 There are no strict requirements on the number of CPU cores, RAM, etc.
 Yet, if the goal is to reproduce our full benchmark results, please note the following:
 * **Strict:** At least **20 GB of RAM** should be **available and free** (so the system should have 20 GB **plus** what is needed by OS, other open programs)
-* *Optional:* The benchmarks utilize up to 32 CPU hardware threads (usually 16 CPU cores) as it runs multiple parties, each potentially multithreading.
+* *Optional:* The benchmarks utilize **32 CPU hardware threads** (usually 16 CPU cores) as they run multiple parties, each potentially multithreading.
                 Benchmarking with less works, but will yield higher run times.
 *We ran our benchmarks on a single machine with an Intel Core i9-7960X CPU @ 2.8 GHz (16 cores, 32 threads) and 128 GB of DDR4 RAM @ 2666 MHz.*
 
@@ -174,6 +174,15 @@ Each individual experiment is run 10 times and we average over the resulting val
 Note that these 10 iterations are split into 5 runs of the respecive benchmark program, which does 2
 iterations on each run.
 
+Run our protocol benchmarks by following these steps:
+```sh
+sudo docker buildx build --network=host -t zkfliop . # takes a few minutes
+sudo docker run -it -v $(pwd):$(pwd) -w $(pwd) --privileged zkfliop # --privileged needed for network emulation
+./compile.sh # should take <2 minutes
+./reproduce.sh # should take <2 hours (runs 240 benchmarks twice, once in LAN, once in WAN)
+# stay inside the Docker container for the next steps
+```
+
 > [!NOTE]
 > Optional benchmarks for related work.
 > 
@@ -195,15 +204,6 @@ iterations on each run.
 > As a backup, we also provide forks of these repositories [here](https://github.com/andreasbrueg/Asterisk_benchmarking) and [here](https://github.com/andreasbrueg/malicious_3pc_arithmetic).
 > 
 > In the following, we are marking all optional steps for the related work with a :star:.
-
-Run our protocol benchmarks by following these steps:
-```sh
-sudo docker buildx build --network=host -t zkfliop . # takes a few minutes
-sudo docker run -it -v $(pwd):$(pwd) -w $(pwd) --privileged zkfliop # --privileged needed for network emulation
-./compile.sh # should take <2 minutes
-./reproduce.sh # should take <2 hours (runs 240 benchmarks twice, once in LAN, once in WAN)
-# stay inside the Docker container for the next steps
-```
 
 **:star: Optional:** Run related work protocol benchmarks by following these steps:
 ```sh
