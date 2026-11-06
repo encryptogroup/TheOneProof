@@ -27,6 +27,9 @@ Parts of the code are based on [Asterisk](https://github.com/cris-coders-iisc/As
 > }
 > ```
 
+> This codebase passed the CCS'26 artifact review and has been awarded the Available, Evaluated-Functional, and Reproduced badges.
+> The corresponding artifact appendix can be found [here](Artifact%20Appendix.pdf).
+> The codebase is also archived on [Zenodo](https://doi.org/10.5281/zenodo.22011889).
 
 ## :books: Table of Contents
 
